@@ -1,0 +1,71 @@
+<li>
+    <div class="item">
+        <?php
+        $session_lang = getSessionLang();
+        if ($input['type'] != 'custom') {
+            if ($page_details->type == 2) {
+                $title = $page_details->title;
+            }else{
+                $titles = json_decode($page_details->title,true);
+                $title = $titles[$session_lang];
+            }
+        }else{
+            $title = $input['text'];
+        }
+        ?>
+        <div class="item-title"><?php echo $title; ?><a href="javascript:void(0)" class="item-trigger" onclick="toggleMenu(this)"><i class="far fa-fw fa-angle-down"></i></a></div>
+        <div class="item-body">
+            <div class="col-md-12">
+                <div class="row">
+                    <ul class="nav nav-tabs tab-basic" role="tablist" style="margin-left: 0px;">
+                        <?php
+                        foreach ($site_langs as $key => $value) { ?>
+                            <li class="nav-item">
+                                <a class="nav-link <?php echo ($value['is_default'] == 1)?'active required':''; ?>" id="<?php echo $value['lang_code'];?>-tab-<?php echo $input['count'];?>" data-toggle="tab" href="#<?php echo $value['lang_code'];?>-tab-href-<?php echo $input['count'];?>" role="tab" aria-controls="<?php echo $value['lang_code'];?>-tab-href-<?php echo $input['count'];?>" aria-selected="false"><?php echo $value['name'];?></a>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                </div>
+            </div>
+            <input type="hidden" class="type" value="<?php echo $input['type']; ?>">
+            <input type="hidden" class="id" value="<?php echo ($input['type'] != 'custom')?$input['id']:''; ?>">
+            <?php if ($input['type'] != 'custom') {?><input class="form-control href" type="hidden" value="" /><?php } ?>
+
+            <div class="tab-content tab-content-basic">
+                <?php
+                foreach ($site_langs as $key => $value) { ?>
+                    <div class="tab-pane fade <?php echo ($value['is_default'] == 1)?'active show':''; ?>" id="<?php echo $value['lang_code'];?>-tab-href-<?php echo $input['count'];?>" role="tabpanel" aria-labelledby="<?php echo $value['lang_code'];?>-tab-<?php echo $input['count'];?>">
+                        <div class="form-group">
+                            <label class="control-label">Name</label>
+                            <?php 
+                            if ($input['type'] == 'custom') {
+                                $name_value = $input['title'];
+                            }
+                            else{
+                                if ($page_details->type == 2) {
+                                    $name_value = $page_details->title;
+                                }else{
+                                    $titles_name = json_decode($page_details->title,true);
+                                    $name_value = $titles_name[$value['lang_code']];
+                                }
+                            }
+                            ?>
+                            <input class="form-control title" type="text" lang="<?php echo $value['lang_code'];?>" value="<?php echo $name_value; ?>" />
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+            <?php if ($input['type'] == 'custom') {?>
+            <div class="form-group">
+                <label class="control-label">Url</label>
+                <input class="form-control href" type="text" value="<?php echo $input['href']; ?>" />
+            </div>
+            <?php } ?>
+            <div class="form-group">
+                <label class="control-label">Class</label>
+                <input class="form-control class" type="text" value="">
+            </div>
+            <div class="action-group"><a href="javascript:void(0)" class="btn-remove" onclick="removeMenu(this)">Remove</a><a href="javascript:void(0)" class="btn-cancel" onclick="cancelMenu(this)">Cancel</a></div>
+        </div>
+    </div>
+</li>

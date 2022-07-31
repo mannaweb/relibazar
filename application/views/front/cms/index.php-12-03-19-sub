@@ -1,0 +1,335 @@
+     <?php $this->load->view('front/common/default/page_banner'); ?>
+<?php if($param1 == 'contact-us'){?>
+    <!-- ##### Breadcumb Area Start ##### -->
+
+    <!-- ##### Breadcumb Area End ##### -->
+
+    <!-- ##### Contact Information Area Start ##### -->
+    <div class="contact-information-area section-padding-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="logo mb-80">
+                        <img src="img/core-img/logo.png" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Contact Text -->
+                <div class="col-8 col-lg-8">
+                    <div class="contact-text">
+                       <?php echo getSiteSettings('description'); ?>
+                       <div class="col-12">
+                    <div class="contact-form-area">
+                        <form action="javascript:void(0)" id="contactForm">
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <input type="text" class="form-control validate" id="name" data-validate-msg="Name field is required" name="name" placeholder="Name">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <input type="text" class="form-control validate" id="email" data-validate-msg="Email field is required" name="email" placeholder="E-mail">
+                                </div>
+                                <div class="col-12">
+                                    <input type="text" class="form-control validate" id="phone" data-validate-msg="Phone field is required" name="phone" placeholder="Phone">
+                                </div>
+                                <div class="col-12">
+                                    <textarea name="message" class="form-control" id="message" name="message" cols="30" rows="10" placeholder="Message"></textarea>
+                                </div>
+
+                                <div class="col-sm-12 d-flex mb-3">
+                                <div class="form-group m-auto">
+                                    <div class="g-recaptcha" data-sitekey="6Lfc3sMUAAAAAELwcpADVQdfMf8dORGSi-Qj8v8w"></div>
+                                </div>
+                            </div>
+
+                                <div class="col-12 text-center">
+                                    <button class="btn delicious-btn mt-30 contactButton" >Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                    </div>
+                </div>
+
+                <div class="col-4 col-lg-4">
+                    <!-- Single Contact Information -->
+                    <div class="single-contact-information mb-30">
+                        <h6>Address:</h6>
+                        <p><?php echo getSiteSettings('address'); ?></p>
+                    </div>
+                    <!-- Single Contact Information -->
+                    <div class="single-contact-information mb-30">
+                        <h6>Phone:</h6>
+                        <p><?php echo getSiteSettings('phone'); ?></p>
+                    </div>
+                    <!-- Single Contact Information -->
+                    <div class="single-contact-information mb-30">
+                        <h6>Email:</h6>
+                        <p><?php echo getSiteSettings('email'); ?></p>
+                    </div>
+                </div>
+
+                <!-- Newsletter Area -->
+                
+            </div>
+        </div>
+    </div>
+    <!-- ##### Contact Information Area End ##### -->
+
+    <!-- ##### Contact Form Area Start ##### -->
+    <!-- <div class="contact-area section-padding-0-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>Get In Touch</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="contact-form-area">
+                        <form action="javascript:void(0)" id="contactForm">
+                            <div class="row">
+                                <div class="col-12 col-lg-6">
+                                    <input type="text" class="form-control validate" id="name" data-validate-msg="Name field is required" name="name" placeholder="Name">
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <input type="text" class="form-control validate" id="email" data-validate-msg="Email field is required" name="email" placeholder="E-mail">
+                                </div>
+                                <div class="col-12">
+                                    <input type="text" class="form-control validate" id="phone" data-validate-msg="Phone field is required" name="phone" placeholder="Phone">
+                                </div>
+                                <div class="col-12">
+                                    <textarea name="message" class="form-control" id="message" name="message" cols="30" rows="10" placeholder="Message"></textarea>
+                                </div>
+
+                                <div class="col-sm-12 d-flex mb-3">
+                                <div class="form-group m-auto">
+                                    <div class="g-recaptcha" data-sitekey="6Lfc3sMUAAAAAELwcpADVQdfMf8dORGSi-Qj8v8w"></div>
+                                </div>
+                            </div>
+
+                                <div class="col-12 text-center">
+                                    <button class="btn delicious-btn mt-30 contactButton" >Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div> -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <?php } ?>
+
+
+<?php if($param1 == 'about-us'){?>    
+       <section class="about-area section-padding-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading mb-80">
+                        <!-- <h3><?php //echo getPageDetailsByAlias('about-us','page_title'); ?></h3> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                   <?php echo getPageDetailsByAlias('about-us','page_description'); ?>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <?php } ?>
+<?php if($param1 == 'signin'){?>
+
+      <!-- ##### Contact Information Area Start ##### -->
+    <div class="contact-information-area section-padding-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="logo mb-80">
+                        <img src="img/core-img/logo.png" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Newsletter Area -->
+                <div class="col-6 col-lg-6">
+                    <div class="newsletter-form bg-img bg-overlay" style="background-image: url(<?php echo base_url();?>assets/front/img/bg-img/bg1.jpg);" id="LoginDiv">
+                        <div id="LoginMsgDiv" style="font-size: 14px;text-align: center;margin: 0px 0px 15px 4px;color: #ef7575;"></div>
+                        <form action="javascript:void(0)" id="signinForm">
+                            <input type="text" name="email" class="validate" placeholder="Phone/Email" data-validate-msg="Email or Phone field is required">
+                             <input type="password" name="password" class="validate" placeholder="Password" data-validate-msg="Password field is required">
+                            <button type="submit" class="btn delicious-btn w-100 signinButton">Login</button>
+                        </form>
+                       <a href="<?php echo base_url(); ?>forget-password"><p>forgot Password?</p></a>
+                    </div>
+                </div>
+                <!-- Contact Text -->
+                <div class="col-6 col-lg-6">
+                    <div class="contact-text">
+                     <h4>Is this your first time here?</h4>
+                     <p>Hi! For full access to courses you'll need to take a minute to create a new
+                    account for yourself on this web site. Each of the individual courses may
+                    also have a one-time "enrolment key', which you won't need until later. Here 
+                    are the steps:</p>
+                    <p>1. Fill out the <a>New Account</a> form with your details.</p>
+                    <p>2. An email will be immediately sent to your email address.</p>
+                    <p>3. Read your email, and click on the web link it contains.</p>
+                   
+                    <!-- <p>Hi! For full access to courses you'll need to take a minute to create a new
+                    account for yourself on this web site. Each of the individual courses may
+                    also have a one-time "enrolment key', which you won't need until later. Here 
+                    are the steps:</p>
+                    <p>1. Fill out the <a>New Account</a> form with your details.</p>
+                    <p>2. An email will be immediately sent to your email address.</p>
+                    <p>3. Read your email, and click on the web link it contains.</p>
+                    <p>4. Your account will be confirmed and you will be logged in.</p>
+                    <p>5. Now, select the course you want to participate in.</p>
+                    <p>6. If you are prompted for an 'enrolment key' - use the one that your
+                    teacher has given you. This will "enrol" you in the course.</p>
+                    <p>7. You can now access the full course_ From now on you will only need to
+                    enter your personal username and password (in the form on this page) to log in and access any course you have enrolled in</p> -->
+                    <a class="btn delicious-btn" href="<?php echo base_url(); ?>signup">Create new account</a>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <?php } ?>
+
+
+    <?php if($param1 == 'signup'){?>
+ 
+      <!-- ##### Contact Information Area Start ##### -->
+    <div class="contact-information-area section-padding-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="logo mb-80">
+                        <img src="img/core-img/logo.png" alt="">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Contact Text -->
+               
+
+              
+
+                <!-- Newsletter Area -->
+                <div class="col-6 col-lg-6">
+                    <div class="newsletter-form bg-img bg-overlay" style="background-image: url(<?php echo base_url();?>assets/front/img/bg-img/bg1.jpg);" id="signupDiv">
+                        <form action="javascript:void(0)" id="signupForm">
+                            <input type="text" name="name" class="validate1" placeholder="Name" data-validate-msg="Name field is required">
+                             <input type="text" name="email" class="validate1" placeholder="Email" data-validate-msg="Email field is required">
+                              <input type="text" name="phone" class="validate1" placeholder="phone" data-validate-msg="Phone field is required">
+                               <input type="password" name="password" class="validate1" id="password1" placeholder="password" data-validate-msg="Password field is required">
+
+
+                            <button type="submit" class="btn delicious-btn w-100 signupButton">Sign Up</button>
+                        </form>
+                       <p> Alerady have a account?</p>
+                    </div>
+                </div>
+
+                 <div class="col-6 col-lg-6">
+                    <div class="contact-text">
+                       <h4>Is this your first time here?</h4>
+                        <p>Hi! For full access to courses you'll need to take a minute to create a new
+                        account for yourself on this web site. Each of the individual courses may
+                        also have a one-time "enrolment key', which you won't need until later. Here 
+                        are the steps:</p>
+                        <p>1. Fill out the <a>New Account</a> form with your details.</p>
+                        <p>2. An email will be immediately sent to your email address.</p>
+                        <p>3. Read your email, and click on the web link it contains.</p>
+                        <p>4. Your account will be confirmed and you will be logged in.</p>
+                        <p>5. Now, select the course you want to participate in.</p>
+                        <p>6. If you are prompted for an 'enrolment key' - use the one that your
+                        teacher has given you. This will "enrol" you in the course.</p>
+                        <p>7. You can now access the full course_ From now on you will only need to
+                        enter your personal username and password (in the form on this page) to log in and access any course you have enrolled in</p>
+
+                        <a class="btn delicious-btn" href="<?php echo base_url(); ?>signin">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
+    <?php if($param1 == 'forget-password'){?>
+        <!-- ##### Contact Information Area Start ##### -->
+        <div class="contact-information-area section-padding-80">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="logo mb-80">
+                            <img src="img/core-img/logo.png" alt="">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Newsletter Area -->
+                    <div class="col-6 col-lg-6">
+                        <div class="newsletter-form bg-img bg-overlay" style="background-image: url(<?php echo base_url();?>assets/front/img/bg-img/bg1.jpg);">
+                            <div id="forgotForm" style="display: block">
+                                <form action="javascript:void(0)" id="forgotPassForm">
+                                    <input type="text" name="email" class="validate" placeholder="Phone/Email" data-validate-msg="Email or Phone field is required">
+                                    <button type="submit" class="btn delicious-btn w-100 forgotButton" id="otpresendButtons">Reset Password</button>
+                                </form>
+                           </div>
+                            <div id="otp_div" style="display: none;">
+                            <div class="sec-page-header"><span>Enter OTP to Reset Password</span></div>
+                            <form id="otpForm">
+                                <div class="item-content">
+                                    <div class="sign-form">
+                                        <input type="hidden" name="user_id" value="0" id="otp_user_id">
+                                        <input type="hidden" id="resendButton" value="Re-Send OTP">
+                                        <div class="form-group input-wrap">
+                                            <span class="icon"><i class="fas fa-fw fa-key"></i></span>
+                                            <input type="text" class="form-control validate_otp" name="otp" id="otp" autocomplete="off" placeholder="OTP" data-validate-msg="OTP field is required">
+                                        </div>
+                                        <div class="action">
+                                            <div class="action-item">
+                                                <a href="javascript:void(0)" class="btn-dark otpButton">Submit</a>
+                                                <a href="javascript:void(0)" id="otpresendButtons" class="btn-login">Re-Send OTP | <span class="time" id="forget_otp_time">00:59</span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                    <!-- Contact Text -->
+                    <div class="col-6 col-lg-6">
+                        <div class="contact-text">
+                         <h4>Is this your first time here?</h4>
+                         <p>Hi! For full access to courses you'll need to take a minute to create a new
+                        account for yourself on this web site. Each of the individual courses may
+                        also have a one-time "enrolment key', which you won't need until later. Here 
+                        are the steps:</p>
+                        <p>1. Fill out the <a>New Account</a> form with your details.</p>
+                        <p>2. An email will be immediately sent to your email address.</p>
+                        <p>3. Read your email, and click on the web link it contains.</p>
+                       ame and password (in the form on this page) to log in and access any course you have enrolled in</p>
+                        <a class="btn delicious-btn" href="<?php echo base_url(); ?>signin">Login</a>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    <?php }?>

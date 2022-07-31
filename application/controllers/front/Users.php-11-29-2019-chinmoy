@@ -1,0 +1,57 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Users extends CI_Controller {
+
+	public function __construct(){
+		parent::__construct();
+		$this->load->library('Front_ajax_pagination');
+		$this->load->model('front/users_model');
+		$this->perPage = 10;
+	}
+
+	public function login(){
+		$return = $this->users_model->loginData($this->input->post());
+		echo json_encode($return);
+	}
+
+	public function signup(){
+		$data = $this->input->post();
+		$emailCheckWhere = array('email'=>$data['email']);
+		$emailCheck = $this->users_model->emailCheck($emailCheckWhere);
+
+		if($emailCheck['status'] == 1){
+			$phoneCheckWhere = array('phone'=>$data['phone']);
+			$phoneCheck = $this->users_model->phoneCheck($phoneCheckWhere);
+			if($phoneCheck['status'] == 1){
+				$return = $this->users_model->signupData($data);
+			}else{
+				$return = $phoneCheck;
+			}
+		} else {
+			$return = $emailCheck;
+		}
+		
+		echo json_encode($return);
+	}
+
+	public function checkSignupOTP(){
+		$return = $this->users_model->checkSignupOTP($this->input->post());
+		echo json_encode($return);
+	}
+
+	public function sendLoginOtp(){
+		$return = $this->users_model->sendLoginOtp($this->input->post());
+		echo json_encode($return);
+	}
+
+	public function checkLoginOTP(){
+		$return = $this->users_model->checkLoginOTP($this->input->post());
+		echo json_encode($return);
+	}
+
+	
+
+	
+}
+?>

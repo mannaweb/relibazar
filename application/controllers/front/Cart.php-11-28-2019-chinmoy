@@ -1,0 +1,66 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+class Cart extends CI_Controller {
+
+	public function __construct(){
+		parent::__construct();
+		$this->load->model('front/cart_model');
+		$this->load->model('front/products_model');
+		$this->cartSessionID = get_cookie('session_id');
+	}
+
+	public function addToCart(){
+	  $pageData = array();
+	  $data = $this->input->post();
+	  $data['productData'] = $this->products_model->getDataByID($data['product_id']);
+	  $checkCart = $this->cart_model->getCartData($this->cartSessionID,$data['product_id'],$data['productData']->product_type);
+	  if($checkCart){
+	  	$updateCart = $this->cart_model->updateCartData($data,$checkCart->id);
+	  	if($updateCart){	  	  
+	  	  $pageData['cartVal'] = $this->cart_model->getCartDataByID($updateCart);
+	  	  $pageData['type']	= 'html';
+	  	  $returnArr['type'] ='html';
+	  	  $returnArr['countCart'] = $this->cart_model->countCart($this->cartSessionID);
+	  	  $subtotal = $this->cart_model->countCartPrice($this->cartSessionID);
+	  	  $returnArr['subtotal'] = $subtotal->total;
+	  	  $returnArr['cart_id'] = $updateCart;
+	  	  $returnArr['html'] = $this->load->view('front/cart/li_list',$pageData,true);
+	  	}
+	  }else{	  	
+	  	$data['session_id'] = $this->cartSessionID;
+	  	$storeCart = $this->cart_model->storeCartData($data);
+	  	if($storeCart){
+	  	  $pageData['cartVal'] = $this->cart_model->getCartDataByID($storeCart);
+	  	  $pageData['type']	= 'appened';	  
+	  	  $returnArr['type'] ='appened';
+	  	  $returnArr['countCart'] = $this->cart_model->countCart($this->cartSessionID);
+	  	  $subtotal = $this->cart_model->countCartPrice($this->cartSessionID);
+	  	  $returnArr['subtotal'] = $subtotal->total;
+	  	  $returnArr['html'] = $this->load->view('front/cart/li_list',$pageData,true);
+	  	}
+	  }
+	  echo json_encode($returnArr);	  
+	}
+
+	public function cartQuantityManage(){
+		$data = $this->input->post();
+		$data['productData'] = $this->products_model->getDataByID($data['product_id']);
+		$updateCart = $this->cart_model->updateCartData($data,$data['cart_id']);
+		if($updateCart){	  	  
+	  	  $pageData['cartVal'] = $this->cart_model->getCartDataByID($updateCart);
+	  	  $pageData['type']	= 'html';
+	  	  $returnArr['type'] ='html';
+	  	  $returnArr['countCart'] = $this->cart_model->countCart($this->cartSessionID);
+	  	  $returnArr['cart_id'] = $updateCart;
+	  	  $returnArr['html'] = $this->load->view('front/cart/li_list',$pageData,true);
+	  	}
+	  	echo json_encode($returnArr);
+	}	
+
+	public function checkout(){
+		$data = array('viewPage'=>'checkout/index','pageTitle'=>'Singla Sweet | Checkout','activeMenus'=>array('checkout'));
+		$this->load->view('front/template/default',$data);	
+	}
+
+}
+?>

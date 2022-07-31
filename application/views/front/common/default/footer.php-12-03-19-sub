@@ -1,0 +1,10 @@
+<footer class="footer-area">
+	<div class="container">
+		<div class="copyright-sec">
+			<div class="copyright">
+				<?php echo getSiteSettings('copyright'); ?>
+			</div>
+			<div class="websiteby">Website by <a href="https://symlinktech.com" rel="nofollow" target="_blank">Symlink Technologies LLP</a></div>
+		</div>
+	</div>
+</footer>

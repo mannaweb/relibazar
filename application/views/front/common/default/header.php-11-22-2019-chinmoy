@@ -1,0 +1,83 @@
+<header class="header-area">
+<!-- Navbar Area -->
+<div class="delicious-main-menu">
+    <div class="classy-nav-container breakpoint-off">
+        <div class="container">
+            <!-- Menu -->
+            <nav class="classy-navbar justify-content-between" id="deliciousNav">
+                <!-- Logo -->
+                <a class="nav-brand" href="<?php echo base_url();?>"><img src="<?php echo getSiteSettings('logo')?>" alt="<?php echo getSiteSettings('title')?>" width="210px;"></a>
+                <!-- Navbar Toggler -->
+                <div class="classy-navbar-toggler">
+                    <span class="navbarToggler"><span></span><span></span><span></span></span>
+                </div>
+                <!-- Menu -->
+                <div class="classy-menu">
+                    <!-- close btn -->
+                    <div class="classycloseIcon">
+                        <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
+                    </div>
+                    <!-- Nav Start -->
+                    <div class="classynav">
+                        <?php 
+                        $getmenu = $this->db->get_where('menu_settings',array('setting_key'=>'menu','menu_location'=>'header'))->row();
+                        if($getmenu && $getmenu->setting_value){
+                        $menus = unserialize($getmenu->setting_value);     
+                        //echo '<pre>';print_r($menus);die();             
+                        ?>
+                        <ul>
+                            <?php foreach ($menus as $key => $value){
+                            if($value['type'] == 'custom'){
+                                $Mainurl = ($value['href'])?$value['href']:'javascript:void(0)';
+                            }else if($value['type'] == 'page'){
+                                if(getPageDetails($value['id'],'slug') && getPageDetails($value['id'],'slug') == 'home'){
+                                    $Mainurl = base_url();
+                                } else if(getPageDetails($value['id'],'slug') && getPageDetails($value['id'],'slug') != 'home'){
+                                    $Mainurl = base_url().getPageDetails($value['id'],'slug');
+                                } else {
+                                    $Mainurl = 'javascript:void(0)';
+                                }
+                            }
+                            if(isset($value['children'])){ 
+                        ?>
+                        <?php if($value){?>
+                        <li class="<?php echo (current_url() == $Mainurl)?'active':''?>"><a href="<?php echo $Mainurl;?>"><?php echo $value['title'];?></a>
+                                <ul class="dropdown">
+                                    <?php foreach ($value['children'] as $key1 => $value1) {           
+                                        if($value1['type'] == 'custom'){
+                                            $Suburl = ($value1['href'])?$value1['href']:'javascript:void(0)';
+                                        }else if($value1['type'] == 'page'){
+                                            if(getPageDetails($value1['id'],'slug') && getPageDetails($value1['id'],'slug') == '/'){
+                                                $Suburl = base_url();
+                                            } else if(getPageDetails($value1['id'],'slug') && getPageDetails($value1['id'],'slug') != '/'){
+                                                $Suburl = base_url().getPageDetails($value1['id'],'slug');
+                                            } else {
+                                                $Suburl = 'javascript:void(0)';
+                                            }
+                                        }else if($value1['type'] == 'post'){
+                                            $Suburl = (getPostDetails($value1['id'],'alias'))?base_url().getPostDetails($value1['id'],'alias'):'javascript:void(0)';
+                                        }
+                                    
+                                    ?>
+                                    <?php if($value1){?>
+                                    <li><a href="<?php echo $Suburl;?>"><?php echo $value1['title'];?></a></li>
+                                    <?php } ?>
+                                    <?php } ?>                                    
+                                </ul>
+                            </li>
+                        <?php } ?>    
+                        <?php } else { ?>
+                        <?php if($value){?>
+                         <li class="<?php echo (current_url() == $Mainurl)?'active':''?>"><a href="<?php echo $Mainurl;?>"><?php echo $value['title'];?></a></li>   
+                        <?php } ?>
+                        <?php } } ?>
+                        </ul>
+                        <?php } ?>
+                    </div>
+                    <!-- Nav End -->
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+</header>

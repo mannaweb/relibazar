@@ -1,0 +1,61 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Products extends CI_Controller {
+
+	public function __construct(){
+		parent::__construct();
+		$this->load->model('front/categories_model');
+		$this->load->model('front/products_model');
+		$this->load->library('front_ajax_pagination');
+		$this->perPage = 10;
+	}
+
+	public function index(){
+		$data = array('viewPage'=>'products/list','pageTitle'=>'Singla sweets category list page','activeMenus'=>array('products'),'jsFiles'=>array('products'));
+		$data['category_info'] = $this->categories_model->getList();
+		//echo '<pre>';print_r($data['category_info']);die();
+		$this->load->view('front/template/default',$data);
+	}
+
+	public function ajaxPaginationSearch(){
+        $returnArr = array();
+		$page = $this->input->post('page');
+        if(!$page){
+            $offset = 0;
+        }else{
+            $offset = $page;
+        }
+
+        $totalRec = count($this->products_model->getList( $this->input->post() ));
+
+        $config['base_url']    = base_url().'products/search-data';
+        $config['total_rows']  = $totalRec;
+        $config['per_page']    = $this->perPage;
+        $config['link_func']   = 'searchFilter';
+        $this->front_ajax_pagination->initialize($config);
+
+		$data['products'] = $this->products_model->getList( $this->input->post(),array('start'=>$offset,'limit'=>$this->perPage));
+		$returnArr['html'] = $this->load->view('front/products/ajax_list',$data,true);
+		$returnArr['pagination'] = $this->load->view('front/products/ajax_list_pagination',$data,true);
+        echo json_encode($returnArr);
+
+	}
+
+	public function getProduct($alias=''){
+		$data = array('viewPage'=>'products/details','activeMenus'=>array('products'),'jsFiles'=>array('products','fancybox/jquery.fancybox.min'),'cssFiles'=>array('js/fancybox/jquery.fancybox.min'));
+		$data['productDetails'] = $this->products_model->getDetails($alias);
+		if($data['productDetails']){
+			$data['pageTitle'] = 'Singla sweets product details page | '.$data['productDetails']->name;
+			$data['username'] = getUserDetails($this->session->userdata('id'),'name');
+			$data['userimage'] = getUserDetails($this->session->userdata('id'),'profile');
+			$this->load->view('front/template/default',$data);
+		}else{
+			redirect('/');
+		}
+		
+	}
+
+	
+}
+?>

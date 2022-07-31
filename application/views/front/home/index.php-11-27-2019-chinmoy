@@ -1,0 +1,136 @@
+  <!-- ##### Hero Area Start ##### -->
+  <?php $this->load->view('front/common/default/banner'); ?>
+  <!-- ##### Hero Area End ##### -->
+
+  <!-- ##### Best Receipe Area Start ##### --> 
+    <?php
+    $getPopularProduct = getFeaturedProduct(array('limit'=>6));
+    if($getPopularProduct){
+    ?>   
+    <section class="best-receipe-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>Top Products</h3>
+                      </div>
+                </div>
+            </div>
+
+            <div class="row">
+               	<div class="col">
+               		<div class="product-lists">
+										<?php 
+											foreach($getPopularProduct as $key=>$val){
+											$tax = (($val->selling_price*$val->tax)/100);
+											$price = $val->selling_price+$tax;
+										?>
+                    <div class="item">
+											<div class="img-container" data-toggle="modal" data-target="#productModal" onclick="product_details('<?php echo $val->id; ?>')">
+												<a href="javascript:void(0)" class="item-category" data-toggle="modal" data-target="#productModal" onclick="product_details('<?php echo $val->id; ?>')"><?php echo $val->category_name; ?></a>
+												<img src="<?php echo productFileExists('uploads/products/'.$val->image,$val->image);?>" alt=""/>
+											</div>
+											<div class="item-content">
+												<div class="item-title" data-toggle="modal" data-target="#productModal" onclick="product_details('<?php echo $val->id; ?>')"><?php echo $val->name;?></div>
+												<div class="item-options">
+													<div class="price" data-toggle="modal" data-target="#productModal" onclick="product_details('<?php echo $val->id; ?>')">₹<?php echo number_format((float)$price, 2, '.', '');?> INR</div>
+													<a href="javascript:void(0)" class="btn-addtocart"><i class="fas fa-cart-plus"></i> Add to Cart</a>
+												</div>
+											</div>
+                    </div>                
+               		<?php } ?>
+									</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <?php }?>
+    <!-- ##### Best Receipe Area End ##### -->
+      
+    <!-- ##### Top Catagory Area Start ##### -->
+    <?php
+    $getPopularCat = getPopularCat(array('limit'=>4));
+    if($getPopularCat){
+    ?>
+    <section class="top-catagory-area">
+        <div class="container">
+             <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>Top Categories</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+							<div class="category-list">
+                <?php foreach($getPopularCat as $key2=>$val2){?>
+                		
+                    <div class="item">
+											<div class="img-container">
+												<img src="<?php echo productFileExists($val2->image,$val2->image);?>" alt="<?php echo $val2->name;?>"/>
+											</div>
+											<div class="item-content">
+												<div class="item-title"><?php echo $val2->name;?></div>
+												<div class="item-text"><?php echo $val2->short_description;?></div>
+												<a href="<?php echo base_url('products?category_id='.$val2->id); ?>" class="btn-view">View Details</a>
+											</div>
+                    </div>
+               
+                <?php } ?>
+							</div>
+            </div>
+        </div>
+    </section>
+   <?php } ?>
+    <!-- ##### Top Catagory Area End ##### -->
+   
+   
+      
+    <!-- ##### CTA Area Start ##### -->
+    <section class="sec-aboutus">
+    	<div class="container">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="sec-about-content">
+					<h3 class="sec-title">About Singla Sweets</h3>
+					<div class="text">
+						<p>Sometimes people use other services to deliver food to their home.Food Delivery Service is very popular to partake in when you are hungry and do not feel likegoing out of the house. Singlasweets is only one platform to make your food testy and delivered to your doorstep.</p>
+						<p>South Indian cuisine is very diverse.The famous traditional south Indian breakfasts like idli, vada and masala dosa was invented in Karnataka in the temple streets of Udupi, which has now become the traditional South Indian food.</p>
+						<p>Chaat is a savory snack at road-side tracks from stalls or food carts in India. Panipuri is a common street snack in several regions of the Indian subcontinent. In East India, it is misidentified with Phuchhka which is very different from Panipuri.</p>
+					</div>
+				</div>
+					</div>
+				</div>
+			</div>
+			<div class="about-bg">
+				<img src="<?php echo base_url();?>assets/front/img/bg-img/bg4.jpg" alt=""/>
+			</div>
+    </section>
+    <!-- ##### CTA Area End ##### -->
+<?php if($testimonials){?>
+    <!-- ##### Follow Us Instagram Area Start ##### -->
+    
+		<section class="sec-testimonial">
+			<div class="container">
+				<div class="section-heading">
+					<h3>Testimonials</h3>
+				</div>
+				<div class="testimonial-slider owl-carousel">
+					<?php foreach($testimonials as $key=>$val){?>
+					<div class="testi-item">
+						<div class="img-container">
+							<img src="<?php echo bannerFileExists($val->user_image,$val->user_image)?>" alt="">
+						</div>
+						<div class="testi-content">
+							<div class="testi-title"><?php echo $val->name;?></div>
+							<div class="testi-text"><?php echo isset($val->short_description)?html_entity_decode($val->short_description):''; ?></div>
+						</div>
+					</div>
+					<?php } ?>
+				</div>
+			</div>
+		</section>
+<?php } ?>
+
+
+

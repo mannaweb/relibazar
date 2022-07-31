@@ -1,0 +1,284 @@
+<?php $this->load->view('front/common/default/page_banner'); ?>
+<section class="sec-checkout-page">
+	<div class="container">
+		<form id="place_order">
+			<?php $getStoreData = getStoreData();?>
+			<input type="hidden" name="store_id" class="form-control" id="store_id" value="<?php echo (($getStoreData && $getStoreData->id)?$getStoreData->id :'')?>">
+			<div class="checkout-wrap">
+				<div class="checkout-info">
+					<h4 class="title"><!-- Billing & Shipping --> Delivery Address</h4>
+					<div class="form-content">
+						<div class="row form-row">
+							<div class="col-lg-12">
+								<div class="form-group">
+									<label class="control-label">Name</label>
+									<input type="text" class="form-control validate" name="user_name" id="user_name" autocomplete="off" data-validate-msg="Nname field is required" placeholder="Enter your Name" value="<?php echo (($user_info && $user_info->name)?$user_info->name:'') ?>" />
+								</div>
+							</div>
+						</div>
+						<div class="row form-row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label class="control-label">Email Address</label>
+									<input type="email" class="form-control validate" name="user_email" id="user_email" autocomplete="off" data-validate-msg="Email field is required" placeholder="Enter your Email Address" value="<?php echo (($user_info && $user_info->email)?$user_info->email:'') ?>"/>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label class="control-label">Contact Number</label>
+									<input type="text" class="form-control validate" name="user_contact_number" id="user_contact_number" autocomplete="off" data-validate-msg="Contact number field is required" placeholder="Enter your Contact Number" value="<?php echo (($user_info && $user_info->phone)?$user_info->phone:'') ?>"/>
+								</div>
+							</div>
+						</div>
+						<div class="row form-row">
+							<div class="col">
+								<div class="form-group">
+									<label class="control-label">Address</label>
+									<input type="text" class="form-control validate" name="user_address" id="user_address" data-validate-msg="Address field is required" autocomplete="off" placeholder="Enter your Address" value="<?php echo (($user_info && $user_info->address)?$user_info->address:'') ?>"/>
+								</div>
+							</div>
+						</div>
+						<div class="row form-row">
+							<div class="col-lg-4">
+								<div class="form-group">
+									<label class="control-label">City</label>
+									<input type="text" class="form-control validate" name="user_city" id="user_city" data-validate-msg="City field is required" autocomplete="off" placeholder="Enter your City" value="<?php echo (($user_info && $user_info->city)?$user_info->city:'') ?>"/>
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="form-group">
+									<label class="control-label">State</label>
+									<input type="text" class="form-control validate" name="user_state" id="user_state" data-validate-msg="State field is required" autocomplete="off" placeholder="Enter your State" value="<?php echo (($user_info && $user_info->state)?$user_info->state:'') ?>"/>
+								</div>
+							</div>
+							<div class="col-lg-4">
+								<div class="form-group">
+									<label class="control-label">Pincode</label>
+									<input type="text" class="form-control validate" name="user_pincode" id="user_pincode" data-validate-msg="Pincode field is required" autocomplete="off" placeholder="Enter your Pincode"value="<?php echo (($user_info && $user_info->pin_code)?$user_info->pin_code:'') ?>"/>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="sec-coupon">
+						<div class="title">Have a Coupon?</div>
+						<div class="apply-code">
+							<div class="label">If you have a coupon code, please apply it below</div>
+							<div class="data">
+								<input type="text" class="form-control" autocomplete="off" name="coupon_code" id="coupon_code" />
+								<a href="javascript:void(0)" class="btn-submit cupBtn" onclick="applyCoupon();">Apply Coupon</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<?php $getAllCartData = getAllCartData(get_cookie('session_id'));  ?>
+				<div class="checkout-summary">
+					<div class="cart-container">
+						<div class="cart-header">
+							<div class="cart-title">Summary</div>
+						</div>
+						<div class="cart-body">
+							<div class="cart-list">
+								<?php
+								   $subtotal = 0;
+								   if(count($getAllCartData)>0){
+								   foreach ($getAllCartData as $cartKey => $cartVal) {
+								?>
+								<div class="cart-item">
+									<div class="title"><?php echo ucwords($cartVal->product_name); ?>
+										<?php if($cartVal->product_ratio != NULL){?>
+									     <span> (<?php echo $cartVal->product_ratio; ?>)</span>
+									    <?php }?>
+									</div>
+									<div class="item-details">
+										<div class="quantity">
+											<div class="rate"><?php echo $cartVal->quantity; ?> X ₹<span><?php echo number_format((float)$cartVal->product_price+$cartVal->tax_price, 2, '.', ''); ?></span></div>
+											<div class="item-note">Included GST of <?php echo $cartVal->tax; ?>%</div>
+										</div>
+										<div class="price">₹<span><?php echo number_format((float)$cartVal->total, 2, '.', ''); ?></span></div>
+									</div>
+								</div>
+								<?php
+								   $subtotal = $subtotal+$cartVal->total;
+								} }?>
+							</div>
+						</div>
+					</div>
+					<input type="hidden" name="coupon_price" id="coupon_price" value="0">
+					<input type="hidden" name="coupon_discount" id="coupon_discount" value="0">
+					<input type="hidden" name="coupon_discount_type" id="coupon_discount_type" value="0">
+					<div class="sec-payments">
+						<div class="payment-summary">
+							<div class="discount-summary" style="display:none;">
+								<div class="discount">Discount of <span>₹<strong id="couponPrice">00.00</strong></span></div>
+								<div class="coupon-code">Coupon Code Applied : <span id="couponCode"></span></div>
+							</div>
+							<div class="totals">
+								<div class="label">
+									Payable Total <!-- <span>Included GST of ₹99.99</span> -->
+								</div>
+								<div class="data">₹<span id="checkout_subtotal"><?php echo number_format((float)$subtotal, 2, '.', ''); ?></span></div>
+							</div>
+						</div>
+						<div class="actions">
+							<a href="javascript:void(0)" class="btn-pay payButton">Proceed to Pay</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<div id="paymentForm" style="width:80%; margin: 0 auto;">
+			<script>
+				window.onload = function() {
+					var d = new Date().getTime();
+					document.getElementById("tid").value = d;
+				};
+			</script>
+			<form method="post" id="customerData" name="customerData" action="<?php echo base_url();?>ccavenue-request" style="display: none;">
+			<input type="text" name="tid" id="tid" readonly />
+			<input type="text" name="merchant_id" value="240382"/>
+			<input type="text" name="order_id" id="order_id" value=""/>
+			<input type="text" name="amount" id="amount" value="10.00"/>
+			<input type="text" name="currency" value="INR"/>
+			<input type="text" name="redirect_url" value="<?php echo base_url();?>ccavenue-responce"/>
+			<input type="text" name="cancel_url" value="<?php echo base_url();?>ccavenue-request"/>
+			<input type="text" name="language" value="EN"/>
+			<input type="text" name="billing_name" id="billing_name" value=""/>
+			<input type="text" name="billing_address" id="billing_address" value=""/>
+			<input type="text" name="billing_city" id="billing_city" value=""/>
+			<input type="text" name="billing_state" id="billing_state" value=""/>
+			<input type="text" name="billing_zip" id="billing_zip" value=""/>
+			<input type="text" name="billing_country" value="India"/>
+			<input type="text" name="billing_tel" id="billing_tel" value=""/>
+			<input type="text" name="billing_email" id="billing_email" value=""/>
+
+			<input type="text" name="delivery_name" value="Sujay"/>
+			<input type="text" name="delivery_address" value="1/18 Poddar Nagar"/>
+			<input type="text" name="delivery_city" value="Kolkata"/>
+			<input type="text" name="delivery_state" value="WB"/>
+			<input type="text" name="delivery_zip" value="700103"/>
+			<input type="text" name="delivery_country" value="India"/>
+			<input type="text" name="delivery_tel" value="8240620044"/>
+
+			<input type="text" name="customer_identifier" value=""/>
+			<input type="text" name="integration_type" value="iframe_normal"/>
+			<INPUT TYPE="submit" value="CheckOut">
+	      </form>
+		</div>
+	</div>
+</section>
+
+
+<!-- <form method="post" name="customerData" action="<?php echo base_url();?>ccavenue-request">
+		<table width="40%" height="100" border='1' align="center"><caption><font size="4" color="blue"><b>Integration Kit</b></font></caption></table>
+			<table width="40%" height="100" border='1' align="center">
+				<tr>
+					<td>Parameter Name:</td><td>Parameter Value:</td>
+				</tr>
+				<tr>
+					<td colspan="2"> Compulsory information</td>
+				</tr>
+				<tr>
+					<td>TID	:</td><td><input type="text" name="tid" id="tid" readonly /></td>
+				</tr>
+				<tr>
+					<td>Merchant Id	:</td><td><input type="text" name="merchant_id" value="240382"/></td>
+				</tr>
+				<tr>
+					<td>Order Id	:</td><td><input type="text" name="order_id" value="<?php echo time(); ?>"/></td>
+				</tr>
+				<tr>
+					<td>Amount	:</td><td><input type="text" name="amount" value="1.00"/></td>
+				</tr>
+				<tr>
+					<td>Currency	:</td><td><input type="text" name="currency" value="INR"/></td>
+				</tr>
+				<tr>
+					<td>Redirect URL	:</td><td><input type="text" name="redirect_url" value="https://www.singlasweets.com/ccavenue/php7.1/test/ccavResponseHandler.php"/></td>
+				</tr>
+			 	<tr>
+			 		<td>Cancel URL	:</td><td><input type="text" name="cancel_url" value="https://www.singlasweets.com/ccavenue/php7.1/test/ccavResponseHandler.php"/></td>
+			 	</tr>
+			 	<tr>
+					<td>Language	:</td><td><input type="text" name="language" value="EN"/></td>
+				</tr>
+		     	<tr>
+		     		<td colspan="2">Billing information(optional):</td>
+		     	</tr>
+		        <tr>
+		        	<td>Billing Name	:</td><td><input type="text" name="billing_name" value="Sujay"/></td>
+		        </tr>
+		        <tr>
+		        	<td>Billing Address	:</td><td><input type="text" name="billing_address" value="1/18 Poddar Nagar"/></td>
+		        </tr>
+		        <tr>
+		        	<td>Billing City	:</td><td><input type="text" name="billing_city" value="Kolkata"/></td>
+		        </tr>
+		        <tr>
+		        	<td>Billing State	:</td><td><input type="text" name="billing_state" value="WB"/></td>
+		        </tr>
+		        <tr>
+		        	<td>Billing Zip	:</td><td><input type="text" name="billing_zip" value="700012"/></td>
+		        </tr>
+		        <tr>
+		        	<td>Billing Country	:</td><td><input type="text" name="billing_country" value="India"/></td>
+		        </tr>
+		        <tr>
+		        	<td>Billing Tel	:</td><td><input type="text" name="billing_tel" value="9903493510"/></td>
+		        </tr>
+		        <tr>
+		        	<td>Billing Email	:</td><td><input type="text" name="billing_email" value="sujaymondal9@gmail.com"/></td>
+		        </tr>
+		        <tr>
+		        	<td colspan="2">Shipping information(optional)</td>
+		        </tr>
+		        <tr>
+		        	<td>Shipping Name	:</td><td><input type="text" name="delivery_name" value="Sujay"/></td>
+		        </tr>
+		        <tr>
+		        	<td>Shipping Address	:</td><td><input type="text" name="delivery_address" value="1/18 Poddar Nagar"/></td>
+		        </tr>
+		        <tr>
+		        	<td>shipping City	:</td><td><input type="text" name="delivery_city" value="Kolkata"/></td>
+		        </tr>
+		        <tr>
+		        	<td>shipping State	:</td><td><input type="text" name="delivery_state" value="WB"/></td>
+		        </tr>
+		        <tr>
+		        	<td>shipping Zip	:</td><td><input type="text" name="delivery_zip" value="700103"/></td>
+		        </tr>
+		        <tr>
+		        	<td>shipping Country	:</td><td><input type="text" name="delivery_country" value="India"/></td>
+		        </tr>
+		        <tr>
+		        	<td>Shipping Tel	:</td><td><input type="text" name="delivery_tel" value="8240620044"/></td>
+		        </tr>
+		        <tr>
+		        	<td>Merchant Param1	:</td><td><input type="text" name="merchant_param1" value="1"/></td>
+		        </tr>
+		        <tr>
+		        	<td>Merchant Param2	:</td><td><input type="text" name="merchant_param2" value="ORD0001"/></td>
+		        </tr>
+				<tr>
+					<td>Merchant Param3	:</td><td><input type="text" name="merchant_param3" value="INVOICE0001"/></td>
+				</tr>
+				<tr>
+					<td>Merchant Param4	:</td><td><input type="text" name="merchant_param4" value=""/></td>
+				</tr>
+				<tr>
+					<td>Merchant Param5	:</td><td><input type="text" name="merchant_param5" value=""/></td>
+				</tr>
+				<tr>
+					<td>Promo Code	:</td><td><input type="text" name="promo_code" value=""/></td>
+				</tr>
+				<tr>
+					<td>Vault Info.	:</td><td><input type="text" name="customer_identifier" value=""/></td>
+				</tr>
+		        <tr>
+		        	<td>Integration Type	:</td><td><input type="text" name="integration_type" value="iframe_normal"/></td>
+		        </tr>
+		        <tr>
+		        	<td></td><td><INPUT TYPE="submit" value="CheckOut"></td>
+		        </tr>
+	      	</table>
+	      </form> -->

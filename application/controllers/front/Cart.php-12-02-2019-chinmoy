@@ -1,0 +1,309 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+class Cart extends CI_Controller {
+
+	public function __construct(){
+		parent::__construct();
+		$this->load->model('front/cart_model');
+		$this->load->model('front/products_model');
+		$this->load->model('front/users_model');
+		$this->cartSessionID = get_cookie('session_id');
+	}
+
+	public function index(){
+		$data = array('viewPage'=>'cart/index','pageTitle'=>'Singla Sweet | Cart','activeMenus'=>array('checkout'));
+		$this->load->view('front/template/default',$data);
+	}
+
+
+	public function addToCart(){
+	  $pageData = array();
+	  $data = $this->input->post();
+	  $data['productData'] = $this->products_model->getDataByID($data['product_id']);
+	  if(isset($data['productData']->product_type) && $data['productData']->product_type ==1){
+	  	$checkCart = $this->cart_model->getCartData($this->cartSessionID,$data['product_id'],$data['productData']->product_type);
+	  }else{
+	  	$checkCart = $this->cart_model->getCartData($this->cartSessionID,$data['product_id'],$data['productData']->product_type,$data['key']);
+	  }	  
+	  if($checkCart){
+	  	$updateCart = $this->cart_model->updateCartData($data,$checkCart->id);
+	  	if($updateCart){	  	  
+	  	  $pageData['cartVal'] = $this->cart_model->getCartDataByID($updateCart);
+	  	  $pageData['type']	= 'html';
+	  	  $returnArr['type'] ='html';
+	  	  $returnArr['countCart'] = $this->cart_model->countCart($this->cartSessionID);
+	  	  $subtotal = $this->cart_model->countCartPrice($this->cartSessionID);
+	  	  $returnArr['subtotal'] = $subtotal->total;
+	  	  $returnArr['cart_id'] = $updateCart;
+	  	  $returnArr['html'] = $this->load->view('front/cart/li_list',$pageData,true);
+	  	}
+	  }else{	  	
+	  	$data['session_id'] = $this->cartSessionID;
+	  	$storeCart = $this->cart_model->storeCartData($data);
+	  	if($storeCart){
+	  	  $pageData['cartVal'] = $this->cart_model->getCartDataByID($storeCart);
+	  	  $pageData['type']	= 'appened';	  
+	  	  $returnArr['type'] ='appened';
+	  	  $returnArr['countCart'] = $this->cart_model->countCart($this->cartSessionID);
+	  	  $subtotal = $this->cart_model->countCartPrice($this->cartSessionID);
+	  	  $returnArr['subtotal'] = $subtotal->total;
+	  	  $returnArr['html'] = $this->load->view('front/cart/li_list',$pageData,true);
+	  	}
+	  }
+	  echo json_encode($returnArr);	  
+	}
+
+	public function cartQuantityManage(){
+		$data = $this->input->post();
+		$data['productData'] = $this->products_model->getDataByID($data['product_id']);
+		$updateCart = $this->cart_model->updateCartData($data,$data['cart_id']);
+		if($updateCart){	  	  
+	  	  $pageData['cartVal'] = $this->cart_model->getCartDataByID($updateCart);
+	  	  $pageData['type']	= 'html';
+	  	  $returnArr['type'] ='html';
+	  	  $returnArr['countCart'] = $this->cart_model->countCart($this->cartSessionID);
+	  	  $returnArr['cart_id'] = $updateCart;
+	  	  $subtotal = $this->cart_model->countCartPrice($this->cartSessionID);
+	  	  $returnArr['subtotal'] = $subtotal->total;
+	  	  $returnArr['html'] = $this->load->view('front/cart/li_list',$pageData,true);
+	  	}
+	  	echo json_encode($returnArr);
+	}	
+
+	public function cartItemDelete(){
+		$cart_id = $this->input->post('cart_id');
+		$delete = $this->cart_model->deleteCartData($cart_id);
+		if($delete){
+			$returnArr['cart_id'] = $cart_id; 
+			$returnArr['success'] = 'true'; 
+			$returnArr['countCart'] = $this->cart_model->countCart($this->cartSessionID);
+			$subtotal = $this->cart_model->countCartPrice($this->cartSessionID);
+	  	    $returnArr['subtotal'] = $subtotal->total;
+		}else{
+			$returnArr['cart_id'] = ''; 
+			$returnArr['success'] = 'false';
+			$returnArr['countCart'] = $this->cart_model->countCart($this->cartSessionID);
+			$subtotal = $this->cart_model->countCartPrice($this->cartSessionID);
+	  	    $returnArr['subtotal'] = $subtotal->total;
+		}
+		echo json_encode($returnArr);
+	}
+
+	public function checkout(){
+		$countCart = $this->cart_model->countCart($this->cartSessionID);
+		if($this->session->userdata('id') && ($countCart>0)){
+			$data = array('viewPage'=>'checkout/index','pageTitle'=>'Singla Sweet | Checkout','activeMenus'=>array('checkout'));
+			$user_id = $this->session->userdata('id');
+			$data['user_info'] = $this->users_model->getUserData($user_id);
+		    $this->load->view('front/template/default',$data);
+		}else{
+			redirect(base_url());
+	    }
+	}
+
+	public function applyCoupon(){
+		$coupon = $this->input->post('coupon_code');
+		$checkCouponData = $this->cart_model->getCoupon($coupon);
+		if($checkCouponData){
+		   $subtotal = $this->cart_model->countCartPrice($this->cartSessionID);
+		   if($checkCouponData->discount_type == 1){
+		   	 $discountPrice = (($subtotal->total*$checkCouponData->discount)/100);
+		   	 $returnArr['discountPrice'] = base64_encode(number_format((float)$discountPrice, 2, '.', ''));
+		   	 $returnArr['coupon'] = base64_encode($coupon);
+		   	 $returnArr['discount'] = base64_encode($checkCouponData->discount);
+		   	 $returnArr['discountType'] = base64_encode('percentage');
+		   	 $returnArr['subtotal'] = base64_encode(number_format((float)$subtotal->total-$discountPrice, 2, '.', ''));
+		   }else{
+		   	 $discountPrice = $checkCouponData->discount;
+		   	 $returnArr['discountPrice'] =base64_encode(number_format((float)$discountPrice, 2, '.', '')) ;
+		   	 $returnArr['coupon'] = base64_encode($coupon);
+		   	 $returnArr['discount'] = base64_encode($checkCouponData->discount);
+		   	 $returnArr['discountType'] = base64_encode('fixed');
+		   	 $returnArr['subtotal'] = base64_encode(number_format((float)$subtotal->total-$discountPrice, 2, '.', ''));
+		   }
+		   $returnArr['status'] = 1; 
+		}else{
+		   $returnArr['status'] = 2;
+		   $returnArr['msg'] = 'Invalid coupon code';
+		}
+		echo json_encode($returnArr);
+		
+	}
+
+	public function placeOrder(){
+		if($this->session->userdata('id')){
+			$data = $this->input->post();
+			$orderData = array();
+			$getProductData = getAllCartData($this->cartSessionID);
+			$subtotal = $this->cart_model->countCartPrice($this->cartSessionID);
+			$orderData['store_id'] = $data['store_id'];
+			$orderData['user_id'] = $this->session->userdata('id');
+			$userInfo = array('user_id' => $this->session->userdata('id'),'user_name' =>$data['user_name'],'email' => $data['user_email'],'contact_number' => $data['user_contact_number'],'delivery_address' => $data['user_address'],'city' => $data['user_city'],'state' => $data['user_state'],'pincode' => $data['user_pincode']);
+			$orderData['user_info'] = json_encode($userInfo);
+			$orderData['product_info'] = json_encode($getProductData);
+			$orderData['coupon'] = $data['coupon_code'];
+			$orderData['coupon_price'] = (($data['coupon_price'] !='0')?base64_decode($data['coupon_price']):0);
+			$orderData['coupon_discount'] = (($data['coupon_discount'] != '0')?base64_decode($data['coupon_discount']):0);
+			$orderData['coupon_discount_type'] = (($data['coupon_discount_type'] != '0')?base64_decode($data['coupon_discount_type']):NULL);
+			$orderData['payment_method'] = 'Cash On Delivery';
+	        $orderData['payment_status'] = 'Pending';
+	        $orderData['order_status'] = 1;
+	        $orderData['total_amount'] = ($subtotal->total-$orderData['coupon_price']);
+	        $orderData['created_by'] = $this->session->userdata('id');
+	        $orderData['created_at'] = date('Y-m-d h:i:s');
+			$storeData = $this->cart_model->storeOrder($orderData);
+			if($storeData){
+			  $getInsertID=str_pad($storeData, 6, '0', STR_PAD_LEFT);
+			  $order_id ="OD".$getInsertID;
+			  $updateData = $this->cart_model->updateOrder(array('order_id'=>$order_id),$storeData);
+			}
+		   if($updateData){
+		   	 //*************** SMS send mobile
+		   	 $message = 'Thanks for your order.Order ID '.$order_id;
+		   	 $getOtpBySms = getOtpBySms($data['user_contact_number'],$message);
+		   	 //************** email send
+		   	 $html = 	 '<table style="font-family: arial, sans-serif;border-collapse: collapse;width: 100%;"> 
+						  <tr>
+						    <th colspan="3" style="border: 1px solid #dddddd;text-align: right;padding: 8px;"><strong>Order ID : '.$order_id.'</strong></th>
+						  </tr>';
+						  $subtotal = 0;
+						  if($getProductData){
+						  	foreach ($getProductData as $key => $value){
+						  		if($value->product_ratio !=''){
+						  		  $name = $value->product_name.'('.$value->product_ratio.')';	
+						  		}else{
+						  		  $name = $value->product_name;
+						  		}
+						  		
+			 $html .=	 '<tr>
+						    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;"><img src="'.productFileExists('uploads/products/'.$value->product_image,$value->product_image).'"></td>
+						    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">'.$name.'<br>Qty: '.$value->quantity.'</td>
+						    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">₨. '.$value->total.'</td>
+						  </tr>';
+						  $subtotal = $subtotal+$value->total;
+						  } }
+			 $html .=	 '<tr>
+						    <td colspan="2" style="border: 1px solid #dddddd;text-align: right;padding: 8px;">Sub Total</td>
+						    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">₨. '.$subtotal.'</td>
+						  </tr>';
+						  if($orderData['coupon'] !=''){
+			 $html .=	  '<tr>
+						    <td colspan="2" style="border: 1px solid #dddddd;text-align: right;padding: 8px;">Coupon ('.$orderData['coupon'].')</td>
+						    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">₨. -'.$orderData['coupon_price'].'</td>
+						  </tr>';
+						  }
+			 $html .=	'<tr>
+						    <td colspan="2" style="border: 1px solid #dddddd;text-align: right;padding: 8px;">Total Amount</td>
+						    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">₨. '.$orderData['total_amount'].'</td>
+						  </tr> 
+						</table>'; 
+			$content = $html;			   		
+			$getUserEmailTemplate = $this->db->get_where('email_templates',array('code'=>'order_email','email_for'=>'user','status'=>1))->row();
+			if($getUserEmailTemplate){
+				$pattern = array('{NAME}','{CONTENT}');
+				$replacement = array($data['user_name'],$content);
+				$body = str_replace($pattern,$replacement,$getUserEmailTemplate->content);	
+				$this->email->from($getUserEmailTemplate->from_email,$getUserEmailTemplate->from_name);
+				$this->email->to($data['user_email']);
+				if($getUserEmailTemplate->cc_email){
+					$this->email->cc($getUserEmailTemplate->cc_email);
+				}
+				$this->email->set_mailtype('html');
+				$this->email->subject($getUserEmailTemplate->subject);
+				$this->email->message($body);
+				$mail = $this->email->send();
+			}
+
+		   	 $deleteCart = $this->cart_model->deleteCartDataAfterPlaceOrder($this->cartSessionID);
+		   	 $returnArr['status'] = 1; 
+		   	 $returnArr['sms'] = $getOtpBySms; 
+		   	 $returnArr['email'] = $mail; 
+		   	 $returnArr['msg'] = 'Your order place successfully';
+		   }else{
+		   	 $returnArr['status'] = 2;
+		     $returnArr['msg'] = 'Order can not be placed, Some problem occured please try again';
+		   }
+		   echo json_encode($returnArr);
+		}else{
+			redirect(base_url());
+	    }
+
+	}
+
+	// private bool SendMobile(long ReciverMobileNo, string MsgBody)
+ //        {
+ //            try
+ //            {
+ //                object[] objArray1 = new object[] { "http://103.247.98.91/API/SendMsg.aspx?uname=20190888&pass=cfpnoS99&send=SINGLA&dest=", ReciverMobileNo, "&msg=", MsgBody, "& priority=1" };
+ //                HttpWebResponse response = (HttpWebResponse)((HttpWebRequest)WebRequest.Create(string.Concat(objArray1))).GetResponse();
+ //                StreamReader reader = new StreamReader(response.GetResponseStream());
+ //                string str = reader.ReadToEnd();
+ //                reader.Close();
+ //                response.Close();
+ //                return true;
+ //            }
+ //            catch (Exception)
+ //            {
+ //                return true;
+ //            }
+ //        }
+
+	public function orderSuccess(){		
+		// $phone = '8170988321';
+		// $message = rawurlencode('Thank You Chinmoy');
+		// $otp = '';
+		// $query = $this->db->get('site_settings');
+  //       $settings = $query->row();        
+  //       $username = trim($settings->sms_username);
+  //       $password = trim($settings->sms_password);
+  //       $send = trim($settings->sms_send);
+  //       $apiUrl = "http://103.247.98.91/API/SendMsg.aspx?uname=".$username."&pass=".$password."&send=".$send."&dest=".$phone."&msg=".$message;
+	 //    $ch = curl_init();
+		// 	  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		// 		    'Connection: close'
+		// 	  ));
+		// 	  curl_setopt($ch, CURLOPT_URL, $apiUrl);
+		// 	  curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+		// 	  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		// 	  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+		// 	  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+		// 	  $data = curl_exec($ch);
+		// 	  $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		// 	  curl_close($ch);
+		// 	  echo $httpcode;
+
+        // $curl = curl_init();
+        //   curl_setopt_array($curl,CURLOPT_INTERFACE, "103.247.98.91", array(
+        //   CURLOPT_URL => $apiUrl,
+        //   CURLOPT_RETURNTRANSFER => true,
+        //   CURLOPT_ENCODING => "",
+        //   CURLOPT_MAXREDIRS => 10,
+        //   CURLOPT_TIMEOUT => 30,
+        //   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //   CURLOPT_CUSTOMREQUEST => "GET",
+        //   CURLOPT_HTTPHEADER => array(
+        //     "cache-control: no-cache",
+        //     "postman-token: 92a68874-bb62-ea8e-94ac-342a8a87e12f"
+        //   ),
+        // ));
+
+        // $response = curl_exec($curl);
+        // $err = curl_error($curl);
+        // curl_close($curl);
+        // if($err){
+        //   $result['error'] = $err;
+        //   $result['phone'] = $phone;
+        //   $result['message'] = $message;
+        //   $result['otp'] = $otp;
+        // }else{
+        //   $result['success'] = $response;
+        //   $result['phone'] = $phone;
+        //   $result['message'] = $message;
+        //   $result['otp'] = $otp;
+        // }
+        // echo json_encode($result);
+		echo 'Thank you for place order .....';
+	}
+
+}
+?>

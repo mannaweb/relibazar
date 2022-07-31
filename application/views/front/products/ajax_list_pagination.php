@@ -1,0 +1,1 @@
+<?php echo $this->front_ajax_pagination->create_links();?>

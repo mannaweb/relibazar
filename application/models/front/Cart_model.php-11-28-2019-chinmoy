@@ -1,0 +1,105 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Cart_model extends CI_Model {
+
+	public function __construct(){
+		parent::__construct();
+	}
+
+    public function getCartData($session_id='',$product_id='',$product_type=''){
+		$this->db->select('*');
+		$this->db->from('cart');
+		$this->db->where('session_id',$session_id);
+		$this->db->where('product_id',$product_id);
+		if($product_type !=''){
+		  $this->db->where('product_type',$product_type);	
+		}
+		$query = $this->db->get();
+		return $query->row();
+	}
+
+	public function countCart($session_id=''){
+		$this->db->select('*');
+		$this->db->from('cart');
+		$this->db->where('session_id',$session_id);
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
+
+	public function countCartPrice($session_id=''){
+		$this->db->select_sum('total');
+		$this->db->from('cart');
+		$this->db->where('session_id',$session_id);
+		$query = $this->db->get();
+		return $query->row();
+	}
+
+	public function getCartDataByID($cart_id=''){
+		$this->db->select('*');
+		$this->db->from('cart');
+		$this->db->where('id',$cart_id);
+		$query = $this->db->get();
+		return $query->row();
+	}
+
+	public function storeCartData($data = array()){
+		$taxPrice = 0;
+		if(isset($data['productData']->product_type) && $data['productData']->product_type == 1){
+			if(isset($data['productData']->tax_status) && $data['productData']->tax_status ==1){
+			  $taxPrice = (($data['productData']->selling_price*$data['productData']->tax)/100);
+		    }	
+		    $totalTax = $taxPrice;
+		    $product_price = $data['productData']->selling_price;
+		    $totalPrice = ($product_price+$totalTax);
+		}else{
+			if(isset($data['productData']->tax_status) && $data['productData']->tax_status ==1){
+			  $jsonPrice = json_decode($data['productData']->selling_price,true);
+			  $taxPrice = (($jsonPrice['price'][$data['key']]*$data['productData']->tax)/100);
+		    }
+		    $totalTax = $taxPrice;
+		    $product_price = $jsonPrice['price'][$data['key']];
+		    $totalPrice = ($product_price+$totalTax);
+		}
+		$storeData = array('session_id'=>$data['session_id'],'product_id'=>$data['product_id'],'product_name'=>$data['productData']->name,'product_image'=>$data['productData']->image,'product_price'=>$product_price,'tax_price'=>$totalTax,'quantity'=>1,'total'=>$totalPrice,'product_type'=>$data['productData']->product_type,'tax'=>$data['productData']->tax,'created_at'=>date('Y-m-d h:i:s'));
+		$this->db->insert('cart',$storeData);
+		return $this->db->insert_id();
+	}
+
+	public function updateCartData($data = array(),$cart_id=''){
+		$checkData = $this->db->get_where('cart',array('id'=>$cart_id))->row();
+		$taxPrice = 0;
+		if(isset($data['productData']->product_type) && $data['productData']->product_type == 1){
+			if(isset($data['productData']->tax_status) && $data['productData']->tax_status ==1){
+				$taxPrice = (($data['productData']->selling_price*$data['productData']->tax)/100);
+			}
+			if(isset($data['quantity']) && !empty($data['quantity'])){
+				$totalQuantity = $data['quantity'];
+			}else{
+				$totalQuantity = $checkData->quantity+1;
+			}		
+			$productPrice = $data['productData']->selling_price;
+			$totalTax = $taxPrice;
+			$totalPrice = ($productPrice*$totalQuantity)+($totalTax*$totalQuantity);
+		}else{
+			if(isset($data['productData']->tax_status) && $data['productData']->tax_status ==1){
+				$jsonPrice = json_decode($data['productData']->selling_price,true);
+				$taxPrice = (($jsonPrice['price'][$data['key']]*$data['productData']->tax)/100);
+			}
+			if(isset($data['quantity']) && !empty($data['quantity'])){
+				$totalQuantity = $data['quantity'];
+			}else{
+				$totalQuantity = $checkData->quantity+1;
+			}		
+			$productPrice = $jsonPrice['price'][$data['key']];
+			$totalTax = $taxPrice;
+			$totalPrice = ($productPrice*$totalQuantity)+($totalTax*$totalQuantity);
+		}
+		  
+		$updateData = array('product_name'=>$data['productData']->name,'product_image'=>$data['productData']->image,'product_price'=>$productPrice,'tax_price'=>$totalTax,'quantity'=>$totalQuantity,'total'=>$totalPrice,'product_type'=>$data['productData']->product_type,'tax'=>$data['productData']->tax,'modified_at'=>date('Y-m-d h:i:s'));
+		 $this->db->where('id',$cart_id)->update('cart',$updateData);
+		 return $cart_id;
+	}
+
+}
+?>

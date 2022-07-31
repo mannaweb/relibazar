@@ -1,0 +1,177 @@
+  <!-- ##### Hero Area Start ##### -->
+  <?php $this->load->view('front/common/default/banner'); ?>
+  <!-- ##### Hero Area End ##### -->
+
+  <!-- ##### Best Receipe Area Start ##### --> 
+    <?php
+    $getPopularProduct = getFeaturedProduct(array('limit'=>6));
+    if($getPopularProduct){
+    ?>   
+    <section class="best-receipe-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>Top Products</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Single Best Receipe Area -->
+                <?php foreach($getPopularProduct as $key=>$val){?>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="single-best-receipe-area mb-30">
+                        <img src="<?php echo productFileExists('uploads/products/'.$val->image,$val->image);?>" alt="" style="width: 100%;height: 250px;">
+                        <div class="receipe-content">
+                            <a href="<?php echo base_url().'product/'.$val->slug;?>">
+                                <h5><?php echo $val->name;?></h5>
+                            </a>
+                            <!-- <div class="ratings">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                <?php } ?>
+            </div>
+        </div>
+    </section>
+    <?php }?>
+    <!-- ##### Best Receipe Area End ##### -->
+      
+    <!-- ##### Top Catagory Area Start ##### -->
+    <?php
+    $getPopularCat = getPopularCat(array('limit'=>2));
+    if($getPopularCat){
+    ?>
+    <section class="top-catagory-area">
+        <div class="container">
+            <div class="row">
+                <!-- Top Catagory Area -->
+                <?php foreach($getPopularCat as $key2=>$val2){?>
+                <div class="col-12 col-lg-6">
+                    <div class="single-top-catagory">
+                        <img src="<?php echo productFileExists($val2->image,$val2->image);?>" alt="" style="width: 540px;height: 250px;">
+                        <!-- Content -->
+                        <div class="top-cta-content">
+                            <h3><?php echo $val2->name;?></h3>
+                            <h6><!-- Simple &amp; Delicios --></h6>
+                            <a href="receipe-post.html" class="btn delicious-btn">View Details</a>
+                        </div>
+                    </div>
+                </div> 
+                <?php } ?>
+            </div>
+        </div>
+    </section>
+   <?php } ?>
+    <!-- ##### Top Catagory Area End ##### -->
+   
+    <!-- ##### Small Receipe Area Start ##### -->
+    <?php  if($category_info){ ?>
+    <section class="small-receipe-area">
+        <div class="container">
+            <div class="row">
+                <?php foreach($category_info as $catKey=>$cat){?>
+                <!-- Small Receipe Area -->
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="single-small-receipe-area d-flex">
+                        <!-- Receipe Thumb -->
+                        <div class="receipe-thumb">
+                            <img src="<?php echo productFileExists($cat->image,$cat->image);?>" alt="" style="width: 80px;height: 64px;">
+                        </div>
+                        <!-- Receipe Content -->
+                        <div class="receipe-content">
+                            <span><?php echo date('F d,Y',strtotime($cat->created_at));?></span>
+                            <a href="receipe-post.html">
+                                <h5><?php echo $cat->name;?></h5>
+                            </a>
+                            <p></p>
+                            <!-- <div class="ratings">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                            </div>
+                            <p>2 Comments</p> -->
+                        </div>
+                    </div>
+                </div>
+              <?php }?>
+            </div>
+        </div>
+    </section>
+    <?php }?>
+    <!-- ##### Small Receipe Area End ##### -->
+      
+    <!-- ##### CTA Area Start ##### -->
+    <section class="cta-area bg-img bg-overlay" style="background-image: url(<?php echo base_url();?>assets/front/img/bg-img/bg4.jpg);">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-12">
+                    <!-- Cta Content -->
+                    <div class="cta-content text-center">
+                        <h2>Gluten Free Receipies</h2>
+                        <p>Fusce nec ante vitae lacus aliquet vulputate. Donec scelerisque accumsan molestie. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Cras sed accumsan neque. Ut vulputate, lectus vel aliquam congue, risus leo elementum nibh</p>
+                        <a href="#" class="btn delicious-btn">Discover all the receipies</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ##### CTA Area End ##### -->
+<?php if($testimonials){?>
+    <!-- ##### Follow Us Instagram Area Start ##### -->
+    <div class="follow-us-instagram section-padding-80-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-heading">
+                        <h3>Testimonials</h3>
+                    </div>
+                </div>
+
+                  <div class="col-12">
+            <div class="row">
+
+                       <?php foreach($testimonials as $key=>$val){?>
+                        <div class="col-12 col-sm-6 col-lg-4">
+                            <div class="single-feature-area mb-80">
+                                <div class="d-flex align-items-center mb-30">
+                                    <img src="<?php echo bannerFileExists($val->user_image,$val->user_image)?>" class="rounded" alt="">
+                                    <h5><?php echo $val->name;?></h5>
+                                </div>
+                               <?php echo isset($val->short_description)?html_entity_decode($val->short_description):''; ?>
+                            </div>
+                        </div>
+                       <?php } ?>
+                       
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<?php } ?>
+    <!-- ##### Follow Us Instagram Area End ##### -->
+    <style type="text/css">
+        .rounded {
+    position: relative;
+    float: left;
+    width:  60px;
+    height: 60px;
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    background-size:     cover;
+}
+    </style>
+

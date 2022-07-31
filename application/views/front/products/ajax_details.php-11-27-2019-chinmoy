@@ -1,0 +1,98 @@
+
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title"><?php echo $productDetails->name; ?> </h4>
+            <button type="button" class="close" data-dismiss="modal">×</button>
+         </div>
+         <div class="modal-body">
+            <div class="details-wrap">
+               <div class="row">
+                  <div class="col-lg-4">
+                     <div class="carousel slide gal-slider" id="gal-slider" data-ride="carousel">
+												<div class="carousel-inner">
+												<div class="carousel-item active">
+													<img src="<?php echo productFileExists('uploads/products/'.$productDetails->image,$productDetails->image);?>" title="">
+												</div>
+												<div class="carousel-item ">
+													<img src="<?php echo productFileExists('uploads/products/'.$productDetails->image,$productDetails->image);?>" title="">
+												</div>
+												<div class="carousel-item">
+													<img src="<?php echo productFileExists('uploads/products/'.$productDetails->image,$productDetails->image);?>" title="">
+												</div>
+												<a class="carousel-control-prev" href="#gal-slider" role="button" data-slide="prev"><i class="fal fa-chevron-circle-left"></i></a>
+												<a class="carousel-control-next" href="#gal-slider" role="button" data-slide="next"><i class="fal fa-chevron-circle-right"></i></a>
+											</div>
+											</div>
+                  </div>
+                  <div class="col-lg-4">
+                     <div class="details-content">
+                        <h5 class="text-center"> Product Details</h5>
+                        <div class="row">
+                          
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label class="control-label"><strong> Price : </strong><strike>₹<?php echo $productDetails->regular_price; ?> <span>INR</span></strike>  <sub>₹<?php echo $productDetails->selling_price; ?> <span>INR</span></sub></label>
+                              <!--    <div class="data">₹<?php echo $productDetails->selling_price; ?> <span>INR</span></div> -->
+                              </div>
+                           </div>
+                         <?php 
+
+                          $tax = (($productDetails->selling_price*$productDetails->tax)/100);
+                          $price = $productDetails->selling_price+$tax;
+                         ?>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                 <label class="control-label"><strong>Tax : </strong><?php echo $productDetails->tax; ?><span>%</span></label>
+                               <!--   <div class="data"></div> -->
+                              </div>
+                           </div>
+
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label class="control-label"><strong>Total Price :</strong> ₹<?php echo number_format((float)$price, 2, '.', '');?></label>
+                               <!--   <div class="data"><strike>₹<?php echo $productDetails->regular_price; ?> <span>INR</span></strike></div> -->
+                              </div>
+                           </div>
+                             <div class="col-md-6">
+                              <div class="form-group">
+                                 <label class="control-label"><strong>Category:</strong> <?php echo $productDetails->cat_name; ?></label>
+                                <!--  <div class="data"><?php echo $productDetails->cat_name; ?></div> -->
+                              </div>
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <label class="control-label"><strong>Description :</strong> </label>
+                           <div class="data"><?php echo $productDetails->short_description; ?></div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-4">
+                     <div class="details-content">
+                        <h5 class="text-center"> Enquiry</h5>
+                        <hr>
+                        <form  action="javascript:void(0)" id="enquiryForm">
+                           <input type="hidden" name="product_id" value="<?php echo $productDetails->id; ?>">
+                        <div class="form-group">
+                           <input type="text" name="name" class="form-control validate" data-validate-msg="Name field is required" placeholder="Please Enter Name">
+                        </div>
+                        <div class="form-group">
+                           <input type="text" name="email" class="form-control validate" data-validate-msg="Email field is required" placeholder="Please Enter Email">
+                        </div>
+                        <div class="form-group">
+                           <input type="text" name="phone" class="form-control validate" data-validate-msg="Phone field is required"  placeholder="Please Enter Phone">
+                        </div>
+                        <div class="form-group">
+                           <textarea class="form-control" name="message" id="message" placeholder="Message.."></textarea>
+                        </div>
+                        <div class="form-group text-center">
+                           <button class="btn delicious-btn btn-block saveEnquiry" onclick="saveEnquiry()">Submit</button>
+                        </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>

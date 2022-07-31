@@ -1,0 +1,32 @@
+ <?php $this->load->view('front/common/default/page_banner'); ?>
+ <!-- ##### Blog Area Start ##### -->
+<div class="sec-product-list-page">
+	<div class="container">
+		<div class="content-wrap">
+			<?php if($category_info){?>
+			<div class="category-sidebar">
+				<h6 class="title">Categories</h6>
+				<ul class="category-sidebar-list">
+					<?php foreach($category_info as $key => $cat){?>
+					<li><a href="<?php echo base_url();?>products?category_id=<?php echo $cat->id; ?>"><?php echo ucwords($cat->name);?></a></li>
+					<?php }?>
+				</ul>
+			</div>
+			<?php }?>
+			<div class="product-lists-wrap">
+				<form action="#" method="post">
+					<div class="search">
+						<div class="form-group">
+							<input type="search" id="keyword" name="keyword" class="form-control" placeholder="Search product" onkeyup="searchFilter();">
+							<input type="hidden" name="category_id" id="category_id" value="<?php echo ($this->input->get('category_id')?$this->input->get('category_id'):'');?>">
+						</div>
+						<button type="button" class="btn-reset" onclick="resetFilter();">Reset</button>
+					</div>
+				</form>
+				<div class="product-lists" id="productList"></div>
+				<div class="pagination-content" id="pagination"></div>
+			</div>
+		</div>
+	</div>
+</div>
+ <!-- ##### Blog Area End ##### -->

@@ -1,0 +1,121 @@
+<?php 
+if($menus && isset($menus->setting_value) && $menus->setting_value){ 
+	$getdata = unserialize($menus->setting_value);
+	if($getdata){
+	$count = 0;
+	foreach($getdata as $key=>$val){
+		$title_arr = json_decode($val['title'],true);
+		$count++;
+	?>
+	<li>
+		<div class="item">
+			<div class="item-title"><?php echo $title_arr[$default_lang->lang_code];?>
+				<a href="javascript:void(0)" class="item-trigger" onclick="toggleMenu(this)"><i class="far fa-fw fa-angle-down"></i></a>
+			</div>
+			<div class="item-body">
+				<input type="hidden" class="type" value="<?php echo $val['type']?>">
+				<input type="hidden" class="id" value="<?php echo $val['id']?>">
+				<div class="col-md-12">
+					<div class="row">
+						<ul class="nav nav-tabs tab-basic" role="tablist" style="margin-left: 0px;">
+							<?php
+							foreach ($site_langs as $key => $value) { ?>
+								<li class="nav-item">
+									<a class="nav-link <?php echo ($value['is_default'] == 1)?'active required':''; ?>" id="<?php echo $value['lang_code'];?>-tab-<?php echo $count;?>" data-toggle="tab" href="#<?php echo $value['lang_code'];?>-tab-href-<?php echo $count;?>" role="tab" aria-controls="<?php echo $value['lang_code'];?>-tab-href-<?php echo $count;?>" aria-selected="false"><?php echo $value['name'];?></a>
+								</li>
+							<?php } ?>
+						</ul>
+					</div>
+				</div>
+				<div class="tab-content tab-content-basic">
+					<?php
+					foreach ($site_langs as $key => $value) { ?>
+						<div class="tab-pane fade <?php echo ($value['is_default'] == 1)?'active show':''; ?>" id="<?php echo $value['lang_code'];?>-tab-href-<?php echo $count;?>" role="tabpanel" aria-labelledby="<?php echo $value['lang_code'];?>-tab-<?php echo $count;?>">
+							<div class="form-group">
+								<label class="control-label">Name</label>
+								<input class="form-control title" type="text" lang="<?php echo $value['lang_code'];?>" value="<?php echo $title_arr[$value['lang_code']];?>">
+							</div>
+						</div>
+					<?php } ?>
+				</div>
+				<?php if($val['type'] == 'custom'){?>
+					<div class="form-group">
+						<label class="control-label">Url</label>
+						<input class="form-control href" type="text" value="<?php echo $val['href']?>">
+					</div>
+				<?php } else {?>
+					<input class="form-control href" type="hidden" value="<?php echo $val['href']?>">
+				<?php } ?>
+				<div class="form-group">
+					<label class="control-label">Class</label>
+					<input class="form-control class" type="text" value="<?php echo $val['class']?>">
+				</div>
+				<div class="action-group">
+					<a href="javascript:void(0)" class="btn-remove" onclick="removeMenu(this)">Remove</a>
+					<a href="javascript:void(0)" class="btn-cancel" onclick="cancelMenu(this)">Cancel</a>
+				</div>
+			</div>
+		</div>
+		<?php if(isset($val['children']) && !empty($val['children'])){?>
+		<ul>
+			<?php foreach($val['children'] as $key2=>$val2){
+				$title2_arr = json_decode($val2['title'],true);
+				$count++;
+			?>
+			<li>
+				<div class="item">
+					<div class="item-title"><?php echo $title2_arr[$default_lang->lang_code];?>
+						<a href="javascript:void(0)" class="item-trigger" onclick="toggleMenu(this)"><i class="far fa-fw fa-angle-down"></i></a>
+					</div>
+					<div class="item-body">
+						<input type="hidden" class="type" value="<?php echo $val2['type']?>">
+						<input type="hidden" class="id" value="<?php echo $val2['id']?>">
+						<div class="row">
+							<ul class="nav nav-tabs tab-basic" role="tablist" style="margin-left: 0px;">
+								<?php
+								foreach ($site_langs as $key => $value) { ?>
+									<li class="nav-item">
+										<a class="nav-link <?php echo ($value['is_default'] == 1)?'active required':''; ?>" id="<?php echo $value['lang_code'];?>-tab-<?php echo $count;?>" data-toggle="tab" href="#<?php echo $value['lang_code'];?>-tab-href-<?php echo $count;?>" role="tab" aria-controls="<?php echo $value['lang_code'];?>-tab-href-<?php echo $count;?>" aria-selected="false"><?php echo $value['name'];?></a>
+									</li>
+								<?php } ?>
+							</ul>
+						</div>
+						<div class="tab-content tab-content-basic">
+						<?php
+						foreach ($site_langs as $key => $value) { ?>
+							<div class="tab-pane fade <?php echo ($value['is_default'] == 1)?'active show':''; ?>" id="<?php echo $value['lang_code'];?>-tab-href-<?php echo $count;?>" role="tabpanel" aria-labelledby="<?php echo $value['lang_code'];?>-tab-<?php echo $count;?>">
+								<div class="form-group">
+									<label class="control-label">Name</label>
+									<input class="form-control title children" type="text" lang="<?php echo $value['lang_code'];?>" value="<?php echo $title2_arr[$value['lang_code']];?>">
+								</div>
+							</div>
+						<?php } ?>
+						</div>
+						<?php if($val2['type'] == 'custom'){?>
+							<div class="form-group">
+								<label class="control-label">Url</label>
+								<input class="form-control href" type="text" value="<?php echo $val2['href']?>">
+							</div>
+						<?php } else {?>
+							<input class="form-control href" type="hidden" value="<?php echo $val2['href']?>">
+						<?php } ?>
+						<div class="form-group">
+							<label class="control-label">Class</label>
+							<input class="form-control class" type="text" value="<?php echo $val2['class']?>">
+						</div>
+						<div class="action-group">
+							<a href="javascript:void(0)" class="btn-remove" onclick="removeMenu(this)">Remove</a>
+							<a href="javascript:void(0)" class="btn-cancel" onclick="cancelMenu(this)">Cancel</a>
+						</div>
+					</div>
+				</div>
+			</li>
+			<?php } ?>
+		</ul>
+		<?php } ?>
+	</li>
+<?php } } } ?>
+
+<script type="text/javascript">
+	$('#count').val("<?php echo $count;?>");
+</script>

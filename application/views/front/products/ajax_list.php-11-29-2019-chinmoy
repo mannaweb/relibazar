@@ -1,0 +1,77 @@
+<?php 
+if($products){ 
+    foreach($products as $key=>$val){
+    $catNum = '';
+    $catName = '';
+    if($val->category_ids){
+       $exp = explode(',', $val->category_ids);
+       if($exp){
+        foreach ($exp as $k => $v) {
+            $cat = $this->db->get_where('categories',array('id'=>$v))->row();
+            $catNum = $cat->name.','; 
+        }
+        $catName = rtrim($catNum,',');
+       }
+    }
+    
+    if($val->product_type == 1){
+    	$tax = (($val->selling_price*$val->tax)/100);
+        $price = $val->selling_price+$tax;
+        $min_weight ='';
+        $parm = '';
+    }else if($val->product_type == 2){
+   		$jsonPrice = json_decode($val->selling_price,true);
+   		$min_weight = min($jsonPrice['weight']);
+        $min_price = min($jsonPrice['price']);
+        $tax = (($min_price*$val->tax)/100);
+        $price = $min_price+$tax;
+        $foreachData = $jsonPrice['weight'];
+        $parm = 'gm';
+    }else if($val->product_type == 3){
+   		$jsonPrice = json_decode($val->selling_price,true);
+   		$min_weight = min($jsonPrice['piece']);
+        $min_price = min($jsonPrice['price']);
+        $tax = (($min_price*$val->tax)/100);
+        $price = $min_price+$tax;
+        $foreachData = $jsonPrice['piece'];
+        $parm = 'pc';
+    }
+    
+?>
+<div class="item" title="<?php echo $val->name;?>">
+	<div class="img-container" data-toggle="modal" data-target="#productModal" onclick="product_details('<?php echo $val->id; ?>')">
+		<a href="javascript:void(0)" class="item-category" data-toggle="modal" data-target="#productModal" onclick="product_details('<?php echo $val->id; ?>')"><?php echo $catName;?></a>
+		<img src="<?php echo productFileExists('uploads/products/'.$val->image,$val->image);?>" alt=""/>
+	</div>
+	<div class="item-content">
+		<div class="item-title" data-toggle="modal" data-target="#productModal" onclick="product_details('<?php echo $val->id; ?>')"><?php echo $val->name;?></div>
+		<div class="item-options">			
+			<div class="price" data-toggle="modal" data-target="#productModal" onclick="product_details('<?php echo $val->id; ?>')">₹<?php echo number_format((float)$price, 2, '.', '');?><span><?php echo (($min_weight)? '/'.$min_weight:''); ?><?php echo $parm; ?></span></div>
+			<?php if($val->product_type == 1){ ?>
+			<div class="dropup">
+				<a href="javascript:void(0)" class="btn-addtocart dropdown-toggle" data-toggle="dropdown" onclick="addToCart(<?php echo $val->id; ?>)"><i class="fas fa-cart-plus"></i> Add to Cart</a>				
+			</div>
+		   <?php }else{?>
+			<div class="dropup">
+				<a href="javascript:void(0)" class="btn-addtocart dropdown-toggle" data-toggle="dropdown"><i class="fas fa-cart-plus"></i> Add to Cart</a>
+				<?php if(isset($jsonPrice)){?>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					<?php 
+					foreach($foreachData as $jkey => $jweight){
+						$rowTax = (($jsonPrice['price'][$jkey]*$val->tax)/100);
+						$rowPrice = $jsonPrice['price'][$jkey]+$rowTax;
+					?>
+					<a class="dropdown-item <?php if($jsonPrice['stock'][$jkey] == 'outofstock'){ ?> disabled <?php } ?>" href="javascript:void(0)" <?php if($jsonPrice['stock'][$jkey] == 'outofstock'){ ?> title="Out of Stock" <?php } ?> <?php if($jsonPrice['stock'][$jkey] == 'instock'){ ?> onclick="addToCart(<?php echo $val->id; ?>,<?php echo $jkey; ?>)" <?php } ?>><?php echo $jweight ?><?php echo $parm;?><span>₹<strong><?php echo number_format((float)$rowPrice, 2, '.', ''); ?></strong></span></a>
+				    <?php } ?>
+				</div>
+			   <?php }?>
+			</div>
+		<?php }?>
+		</div>
+	</div>
+</div>  
+<?php } } else { ?>
+    <p align="center" style="color: red;">No Product Found!</p>
+    </tr>
+<?php } ?>
+

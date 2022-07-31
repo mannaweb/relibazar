@@ -1,0 +1,245 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+include(APPPATH . '/libraries/Crypto.php');
+class Order extends CI_Controller {
+
+	public function __construct(){
+		parent::__construct();
+		$this->load->model('front/cart_model');
+		$this->load->model('front/products_model');
+		$this->load->model('front/users_model');
+		$this->load->model('front/order_model');
+		$this->cartSessionID = get_cookie('session_id');
+	}
+
+	public function placeOrder(){		
+			$data = $this->input->post();
+			$orderData = array();
+			$getProductData = getAllCartData($this->cartSessionID);
+			$subtotal = $this->cart_model->countCartPrice($this->cartSessionID);
+			$orderData['store_id'] = $data['store_id'];
+			$orderData['user_id'] = $this->session->userdata('id');
+			$userInfo = array('user_id' => $this->session->userdata('id'),'user_name' =>$data['user_name'],'email' => $data['user_email'],'contact_number' => $data['user_contact_number'],'delivery_address' => $data['user_address'],'city' => $data['user_city'],'state' => $data['user_state'],'pincode' => $data['user_pincode']);
+			$orderData['user_info'] = json_encode($userInfo);
+			$orderData['product_info'] = json_encode($getProductData);
+			$orderData['coupon'] = $data['coupon_code'];
+			$orderData['coupon_price'] = (($data['coupon_price'] !='0')?base64_decode($data['coupon_price']):0);
+			$orderData['coupon_discount'] = (($data['coupon_discount'] != '0')?base64_decode($data['coupon_discount']):0);
+			$orderData['coupon_discount_type'] = (($data['coupon_discount_type'] != '0')?base64_decode($data['coupon_discount_type']):NULL);
+			$orderData['payment_method'] = 'Cash On Delivery';
+	        $orderData['payment_status'] = 'Pending';
+	        $orderData['order_status'] = 1;
+	        $orderData['total_amount'] = ($subtotal->total-$orderData['coupon_price']);
+	        $orderData['created_by'] = $this->session->userdata('id');
+	        $orderData['created_at'] = date('Y-m-d h:i:s');
+			$storeData = $this->cart_model->storeOrder($orderData);
+			if($storeData){
+			  $getInsertID=str_pad($storeData, 6, '0', STR_PAD_LEFT);
+			  $order_id ="OD".$getInsertID;
+			  $updateData = $this->cart_model->updateOrder(array('order_id'=>$order_id),$storeData);
+			}
+		   if($updateData){
+		   	 $orderdata = array();
+		   	 $order_info = $this->order_model->getOrderData($order_id);
+		   	 $user_info = json_decode($order_info->user_info);
+		   	 $returnArr['order_id'] = (($order_info && $order_info->order_id)?$order_info->order_id:'');
+		   	 $returnArr['billing_name'] = (($user_info && $user_info->user_name)?$user_info->user_name:'');
+		   	 $returnArr['billing_address'] = (($user_info && $user_info->delivery_address)?$user_info->delivery_address:'');
+		   	 $returnArr['billing_city'] = (($user_info && $user_info->city)?$user_info->city:'');
+		   	 $returnArr['billing_state'] = (($user_info && $user_info->state)?$user_info->state:'');
+		   	 $returnArr['billing_zip'] = (($user_info && $user_info->pincode)?$user_info->pincode:'');
+		   	 $returnArr['billing_tel'] = (($user_info && $user_info->contact_number)?$user_info->contact_number:'');
+		   	 $returnArr['billing_email'] = (($user_info && $user_info->email)?$user_info->email:'');
+		   	 $returnArr['amount'] = (($order_info && $order_info->total_amount)?$order_info->total_amount:'');
+		   	 $returnArr['status'] = 1; 
+		   	 $returnArr['msg'] = 'Your order place successfully';
+		   }else{
+		   	 $returnArr['status'] = 2;
+		     $returnArr['msg'] = 'Order can not be placed, Some problem occured please try again';
+		   }
+		   echo json_encode($returnArr);
+	}
+
+	public function ccavRequestHandler(){
+		error_reporting(E_ALL);
+		ini_set('display_errors', 1);
+
+		$merchant_data='240382';
+		$working_key='A1E8A3441348B601C56C8074734DD675';//Shared by CCAVENUES
+		$access_code='AVXE89GL10AD98EXDA';//Shared by CCAVENUES		
+		foreach ($_POST as $key => $value){
+			$merchant_data.=$key.'='.$value.'&';
+		}		
+		$encrypted_data=encrypt($merchant_data,$working_key); // Method for encrypting the data.
+		//$production_url='https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction&encRequest='.$encrypted_data.'&access_code='.$access_code;		
+		$production_url='https://test.ccavenue.com/transaction/transaction.do?command=initiateTransaction&encRequest='.$encrypted_data.'&access_code='.$access_code;
+		echo '<div style="width:80%; margin: 0 auto;"><iframe src="'.$production_url.'" id="paymentFrame" width="100%" height="100%" frameborder="0" scrolling="No" ></iframe></div>';
+		//echo '<script type="text/javascript" src="jquery-1.7.2.js"></script>';
+		
+	}
+
+	public function ccavResponceHandler(){
+		error_reporting(E_ALL);
+	ini_set('display_errors', 1);
+	
+	$workingKey='A1E8A3441348B601C56C8074734DD675';		//Working Key should be provided here.
+	$encResponse=$_POST["encResp"];			//This is the response sent by the CCAvenue Server
+	$rcvdString=decrypt($encResponse,$workingKey);		//Crypto Decryption used as per the specified working key.
+	$order_status="";
+	$decryptValues=explode('&', $rcvdString);
+	$dataSize=sizeof($decryptValues);
+	echo "<center>";
+
+	for($i = 0; $i < $dataSize; $i++) 
+	{
+		$information=explode('=',$decryptValues[$i]);
+		if($i==3)	$order_status=$information[1];
+	}
+
+	if($order_status==="Success")
+	{
+		echo "<br>Thank you for shopping with us. Your credit card has been charged and your transaction is successful. We will be shipping your order to you soon.";
+		
+	}
+	else if($order_status==="Aborted")
+	{
+		echo "<br>Thank you for shopping with us.We will keep you posted regarding the status of your order through e-mail";
+	
+	}
+	else if($order_status==="Failure")
+	{
+		echo "<br>Thank you for shopping with us.However,the transaction has been declined.";
+	}
+	else
+	{
+		echo "<br>Security Error. Illegal access detected";
+	
+	}
+
+	echo "<br><br>";
+
+	echo "<table cellspacing=4 cellpadding=4>";
+	for($i = 0; $i < $dataSize; $i++) 
+	{
+		$information=explode('=',$decryptValues[$i]);
+	    	echo '<tr><td>'.$information[0].'</td><td>'.$information[1].'</td></tr>';
+	}
+
+	echo "</table><br>";
+	echo "</center>";
+		
+	}
+
+
+
+
+	public function orderSuccess(){
+		 $allSmsAdmins = $this->users_model->getAdminData('',1);
+	   	 //*************** SMS send mobile
+	   	 $message = 'Thanks for your order.Order ID '.$order_id;
+	   	 $getOtpBySms = getOtpBySms($data['user_contact_number'],$message);
+	   	 //*************** Sms send admin
+	   	 $allSmsAdmins = $this->users_model->getAdminData('',1);
+		 if($allSmsAdmins){
+			$message_admin = 'New order has been placed by '.$data['user_name'].'. Order ID '.$order_id;
+			foreach ($allSmsAdmins as $key3 => $value3) {
+				$phone = $value3->phone;
+				$getOtpBySms = getOtpBySms($phone,$message_admin);
+			}
+		 }
+	   	 //************** email send
+	   	 $html = 	 '<table style="font-family: arial, sans-serif;border-collapse: collapse;width: 100%;"> 
+					  <tr>
+					    <th colspan="3" style="border: 1px solid #dddddd;text-align: right;padding: 8px;"><strong>Order ID : '.$order_id.'</strong></th>
+					  </tr>';
+					  $subtotal = 0;
+					  if($getProductData){
+					  	foreach ($getProductData as $key => $value){
+					  		if($value->product_ratio !=''){
+					  		  $name = $value->product_name.'('.$value->product_ratio.')';	
+					  		}else{
+					  		  $name = $value->product_name;
+					  		}
+					  		
+		 $html .=	 '<tr>
+					    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;"><img src="'.productFileExists('uploads/products/'.$value->product_image,$value->product_image).'" style="width:100px;"></td>
+					    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">'.$name.'<br>Qty: '.$value->quantity.'</td>
+					    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">₨. '.$value->total.'</td>
+					  </tr>';
+					  $subtotal = $subtotal+$value->total;
+					  } }
+		 $html .=	 '<tr>
+					    <td colspan="2" style="border: 1px solid #dddddd;text-align: right;padding: 8px;">Sub Total</td>
+					    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">₨. '.$subtotal.'</td>
+					  </tr>';
+					  if($orderData['coupon'] !=''){
+		 $html .=	  '<tr>
+					    <td colspan="2" style="border: 1px solid #dddddd;text-align: right;padding: 8px;">Coupon ('.$orderData['coupon'].')</td>
+					    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">₨. -'.$orderData['coupon_price'].'</td>
+					  </tr>';
+					  }
+		 $html .=	'<tr>
+					    <td colspan="2" style="border: 1px solid #dddddd;text-align: right;padding: 8px;">Total Amount</td>
+					    <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;">₨. '.$orderData['total_amount'].'</td>
+					  </tr> 
+					</table>'; 
+		$content = $html;
+
+		//************* Send mail user
+		$getUserEmailTemplate = $this->db->get_where('email_templates',array('code'=>'order_email','email_for'=>'user','status'=>1))->row();
+		if($getUserEmailTemplate){
+			$pattern = array('{NAME}','{CONTENT}');
+			$replacement = array($data['user_name'],$content);
+			$body = str_replace($pattern,$replacement,$getUserEmailTemplate->content);	
+			$this->email->from($getUserEmailTemplate->from_email,$getUserEmailTemplate->from_name);
+			$this->email->to($data['user_email']);
+			if($getUserEmailTemplate->cc_email){
+				$this->email->cc($getUserEmailTemplate->cc_email);
+			}
+			$this->email->set_mailtype('html');
+			$this->email->subject($getUserEmailTemplate->subject);
+			$this->email->message($body);
+			$mail = $this->email->send();
+		}
+
+		//************* Send mail all admins
+		$allEmailAdmins = $this->users_model->getAdminData(1,'');
+		$emails = '';
+		if($allEmailAdmins){
+			foreach ($allEmailAdmins as $key2 => $value2) {
+				$email[] = $value2->email;
+				$emails = implode(',', $email);
+			}
+		}
+
+		$settings = $this->db->get('site_settings')->row();
+		$getAdminEmailTemplate = $this->db->get_where('email_templates',array('code'=>'order_email_for_admin','email_for'=>'admins','status'=>1))->row();
+		if($getUserEmailTemplate){
+			$pattern = array('{CONTENT}');
+			$replacement = array($content);
+			$body = str_replace($pattern,$replacement,$getAdminEmailTemplate->content);	
+			$this->email->from($getAdminEmailTemplate->from_email,$getAdminEmailTemplate->from_name);
+			$this->email->to($settings->email);
+			if($getAdminEmailTemplate->cc_email){
+				$this->email->cc($getAdminEmailTemplate->cc_email);
+			}
+			if($emails !=''){
+				$this->email->bcc($emails);
+			}
+			$this->email->set_mailtype('html');
+			$this->email->subject($getAdminEmailTemplate->subject);
+			$this->email->message($body);
+			$mail2 = $this->email->send();
+		}
+	   	 $deleteCart = $this->cart_model->deleteCartDataAfterPlaceOrder($this->cartSessionID);
+	   	 
+	   	 $returnArr['status'] = 1; 
+	   	 $returnArr['sms'] = $getOtpBySms; 
+	   	 $returnArr['email'] = $mail; 
+		echo 'Thank you for place order .....';
+	}
+
+
+
+}
+?>

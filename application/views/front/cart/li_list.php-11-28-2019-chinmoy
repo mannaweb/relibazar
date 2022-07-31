@@ -1,0 +1,22 @@
+  <?php if($cartVal){?>
+  <?php if($type == 'appened'){?>
+    <div class="cart-item" id="cart_li_<?php echo $cartVal->id; ?>">
+  <?php }?>
+    <div class="title"><?php echo ucwords($cartVal->product_name); ?></div>
+    <div class="item-details">
+      <div class="quantity">
+        <div class="number-spinner" data-id="<?php echo $cartVal->id; ?>">
+          <button class="btn" data-dir="dwn" id="<?php echo $cartVal->id; ?>"><span class="fal fa-minus-circle"></span></button>
+          <input type="text" class="formcontrol" id="formcontrol_<?php echo $cartVal->id; ?>" value="<?php echo $cartVal->quantity; ?>" readonly>
+          <input type="hidden" name="pid" class="pid" id="pid_<?php echo $cartVal->id; ?>" value="<?php echo $cartVal->product_id; ?>">
+          <button class="btn" data-dir="up" id="<?php echo $cartVal->id; ?>"><span class="fal fa-plus-circle"></span></button>
+        </div>
+        <div class="rate">X ₹<span><?php echo number_format((float)$cartVal->product_price+$cartVal->tax_price, 2, '.', ''); ?></span></div>
+        <div class="item-note">Included GST of <?php echo $cartVal->tax; ?>%</div>
+      </div>
+      <div class="price">₹<span><?php echo number_format((float)$cartVal->total, 2, '.', ''); ?></span></div>
+    </div>
+ <?php } ?>
+ <?php if($type == 'appened'){?>
+  </div>
+  <?php }?>

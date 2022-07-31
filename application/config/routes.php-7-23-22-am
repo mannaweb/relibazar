@@ -1,0 +1,579 @@
+<?php
+
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+
+
+$route['default_controller'] = 'home';
+
+$route['404_override'] = '';
+
+$route['translate_uri_dashes'] = FALSE;
+
+
+
+
+
+////////////////////////APP///////////////////////////////
+
+$route['api/user/register'] = 'front/api/register';
+
+
+
+$route['api/user/login'] = 'front/api/login';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$route['login'] = 'front/users/loginview';
+$route['signup'] = 'front/users/signupview';
+
+$route['user/login'] = 'front/users/login';
+
+$route['user/signup'] = 'front/users/signup';
+
+$route['user/check-signup-otp'] = 'front/users/checkSignupOTP';
+
+$route['user/send-login-otp'] = 'front/users/sendLoginOtp';
+
+$route['user/check-login-otp'] = 'front/users/checkLoginOTP';
+
+$route['user-password-sendotp'] = 'home/sendotp';
+
+$route['user-password-checkotp'] = 'home/checkotp';
+
+$route['user-password-change'] = 'home/changeForgotPassword';
+
+
+
+$route['user/send-phone-otp'] = 'front/users/sendPhoneOtp';
+
+$route['user/check-phone-login-otp'] = 'front/users/checkPhoneLoginOTP';
+
+
+
+$route['logout'] = 'home/logout';
+
+
+
+
+
+$route['user/profile'] = 'front/userprofile/viewProfile';
+
+$route['user/comission'] = 'front/users/comission';
+
+$route['edit-profile-save'] = 'front/userprofile/saveProfileData';
+
+$route['email-verify'] = 'front/userprofile/emailVerify';
+
+$route['otp-change-email'] = 'front/userprofile/otpChangeEmail';
+
+$route['phone-verify'] = 'front/userprofile/phoneVerify';
+
+$route['otp-check-phone'] = 'front/userprofile/otpChangePhone';
+
+$route['user/change-password'] = 'front/userprofile/ChangePassword';
+
+$route['change-password-save'] = 'front/userprofile/saveChangePassword';
+
+$route['user/details'] = 'front/userprofile/user_details';
+
+
+
+$route['user/orders'] = 'front/orders';
+
+$route['orders/search-data'] = 'front/orders/ajaxPaginationSearch';
+
+$route['orders/search-data/(:num)'] = 'front/orders/ajaxPaginationSearch/$1';
+
+
+
+$route['categories'] = 'front/categories';
+
+$route['categories/search-data'] = 'front/categories/ajaxPaginationSearch';
+
+$route['categories/search-data/(:num)'] = 'front/categories/ajaxPaginationSearch/$1';
+
+$route['category/(:any)'] = 'front/categories/getCategories/$1';
+
+
+
+$route['products'] = 'front/products';
+
+$route['products/search-data'] = 'front/products/ajaxPaginationSearch';
+
+$route['products/search-data/(:num)'] = 'front/products/ajaxPaginationSearch/$1';
+
+$route['product/details'] = 'front/products/productDetails';
+
+$route['wedding-delight'] = 'front/products';
+
+$route['wedding-delight/search-data'] = 'front/products/ajaxPaginationSearch';
+
+$route['wedding-delight/search-data/(:num)'] = 'front/products/ajaxPaginationSearch/$1';
+
+
+
+$route['cart'] = 'front/cart';
+
+$route['add-to-cart'] = 'front/cart/addToCart';
+
+$route['cart-quantity-manage'] = 'front/cart/cartQuantityManage';
+
+$route['cart-item-delete'] = 'front/cart/cartItemDelete';
+
+
+
+$route['contact-save-data'] = 'home/saveContactData';
+
+$route['enquiry-save-data'] = 'home/saveEnquiryData';
+
+
+
+
+
+$route['checkout'] = 'front/cart/checkout';
+
+$route['apply-coupon'] = 'front/cart/applyCoupon';
+
+
+
+$route['place-order'] = 'front/order/placeOrder';
+
+$route['order-information'] = 'front/order/ccavResponceHandler';
+
+$route['payment'] = 'front/order/ccavRequestHandler';
+
+$route['thankyou'] = 'front/order/orderSuccess';
+
+// Admin
+
+$route['admin'] = 'admin/login';
+
+$route['admin/login'] = 'admin/login/login';
+
+$route['admin/logout'] = 'admin/login/logout';
+
+
+
+$route['admin/twofactor-login'] = 'admin/twofactor/twofactorLogin';
+
+
+
+$route['admin/two-factor'] = 'admin/twofactor';
+
+$route['admin/twofactor-save-data'] = 'admin/twofactor/saveData';
+
+
+
+$route['admin/sendotp'] = 'admin/login/sendotp';
+
+$route['admin/checkotp'] = 'admin/login/checkotp';
+
+$route['admin/change_pass'] = 'admin/login/change_pass';
+
+
+
+$route['admin/dashboard'] = 'admin/dashboard';
+
+
+
+$route['admin/admins'] = 'admin/admins';
+
+$route['admin/admin-search-data'] = 'admin/admins/ajaxPaginationSearch';
+
+$route['admin/admin-search-data/(:num)'] = 'admin/admins/ajaxPaginationSearch/$1';
+
+$route['admin/add-admin'] = 'admin/admins/manageAdmin';
+
+$route['admin/edit-admin/(:num)'] = 'admin/admins/manageAdmin/$1';
+
+$route['admin/admin-save-data'] = 'admin/admins/saveData';
+
+$route['admin/change-status-admin'] = 'admin/admins/statusChange';
+
+$route['admin/delete-admin'] = 'admin/admins/deleteData';
+
+
+
+
+
+$route['admin/users'] = 'admin/users';
+
+$route['admin/user-search-data'] = 'admin/users/ajaxPaginationSearch';
+
+$route['admin/user-search-data/(:num)'] = 'admin/users/ajaxPaginationSearch/$1';
+
+$route['admin/add-user'] = 'admin/users/manageUser';
+
+$route['admin/edit-user/(:num)'] = 'admin/users/manageUser/$1';
+
+$route['admin/user-save-data'] = 'admin/users/saveData';
+
+$route['admin/change-status-user'] = 'admin/users/statusChange';
+
+$route['admin/delete-user'] = 'admin/users/deleteData';
+
+$route['admin/user-details/(:num)'] = 'admin/users/viewUser/$1';
+
+
+
+$route['admin/change-status-phone'] = 'admin/users/statusPhone';
+
+$route['admin/change-status-email'] = 'admin/users/statusEmail';
+
+
+
+$route['admin/blogs'] = 'admin/blogs';
+
+$route['admin/blog-search-data'] = 'admin/blogs/ajaxPaginationSearch';
+
+$route['admin/blog-search-data/(:num)'] = 'admin/blogs/ajaxPaginationSearch/$1';
+
+$route['admin/add-blog'] = 'admin/blogs/manageBlog';
+
+$route['admin/edit-blog/(:any)'] = 'admin/blogs/manageBlog/$1';
+
+$route['admin/blog-save-data'] = 'admin/blogs/saveData';
+
+$route['admin/change-status-blog'] = 'admin/blogs/statusChange';
+
+$route['admin/delete-blog'] = 'admin/blogs/deleteData';
+
+$route['admin/save-blog-ordering'] = 'admin/blogs/saveOrdering';
+
+$route['admin/change-featured-blog'] = 'admin/blogs/changeFeaturedBlog';
+
+
+
+$route['admin/pages'] = 'admin/pages';
+
+$route['admin/page-search-data'] = 'admin/pages/ajaxPaginationSearch';
+
+$route['admin/page-search-data/(:num)'] = 'admin/pages/ajaxPaginationSearch/$1';
+
+$route['admin/add-page'] = 'admin/pages/managePage';
+
+$route['admin/edit-page/(:any)'] = 'admin/pages/managePage/$1';
+
+$route['admin/page-save-data'] = 'admin/pages/saveData';
+
+$route['admin/page-alias'] = 'admin/pages/AliasManage';
+
+$route['admin/delete-page'] = 'admin/pages/deleteData';
+
+
+
+
+
+$route['admin/seo/(:any)/(:num)'] = 'admin/seoes/SeoesManage';
+
+$route['admin/seo-save-data'] = 'admin/seoes/saveData';
+
+
+
+
+
+$route['admin/banners'] = 'admin/banners';
+
+$route['admin/banner-search-data'] = 'admin/banners/ajaxPaginationSearch';
+
+$route['admin/banner-search-data/(:num)'] = 'admin/banners/ajaxPaginationSearch/$1';
+
+$route['admin/add-banner'] = 'admin/banners/BannersManage';
+
+$route['admin/edit-banner/(:any)'] = 'admin/banners/BannersManage/$1';
+
+$route['admin/banner-save-data'] = 'admin/banners/saveData';
+
+$route['admin/change-status-banner'] = 'admin/banners/statusChange';
+
+$route['admin/delete-banner'] = 'admin/banners/deleteData';
+
+$route['admin/banners/(:any)/(:num)'] = 'admin/banners/BannersManage';
+
+
+
+$route['admin/menu-settings'] = 'admin/menusettings';
+
+$route['admin/menu-save-data'] = 'admin/menusettings/saveData';
+
+$route['admin/get-menu-data'] = 'admin/menusettings/getData';
+
+
+
+
+
+
+
+$route['admin/faqs'] = 'admin/faqs';
+
+$route['admin/faq-search-data'] = 'admin/faqs/ajaxPaginationSearch';
+
+$route['admin/faq-search-data/(:num)'] = 'admin/faqs/ajaxPaginationSearch/$1';
+
+$route['admin/add-faq'] = 'admin/faqs/manageFaq';
+
+$route['admin/edit-faq/(:any)'] = 'admin/faqs/manageFaq/$1';
+
+$route['admin/faq-save-data'] = 'admin/faqs/saveData';
+
+$route['admin/change-status-faq'] = 'admin/faqs/statusChange';
+
+$route['admin/delete-faq'] = 'admin/faqs/deleteData';
+
+$route['admin/save-faq-ordering'] = 'admin/faqs/saveOrdering';
+
+
+
+
+
+$route['admin/video-url/blog/(:any)'] = 'admin/videourls/manageVideoUrl/$1';
+
+$route['admin/video-save-data'] = 'admin/videourls/saveData';
+
+$route['admin/ajax-video-div-load'] = 'admin/videourls/ajaxLoadDiv';
+
+
+
+
+
+$route['admin/emails'] = 'admin/emails';
+
+$route['admin/edit-search-data'] = 'admin/emails/ajaxPaginationSearch';
+
+$route['admin/edit-search-data/(:num)'] = 'admin/emails/ajaxPaginationSearch/$1';
+
+$route['admin/edit-email/(:num)'] = 'admin/emails/manageEmail/$1';
+
+$route['admin/email-save-data'] = 'admin/emails/saveData';
+
+
+
+$route['admin/site-settings'] = 'admin/sitesettings/manageSettings';
+
+$route['admin/site-settings-save-data'] = 'admin/sitesettings/saveData';
+
+
+
+$route['admin/transactions'] = 'admin/transactions';
+
+$route['admin/transactions-search-data'] = 'admin/transactions/ajaxPaginationSearch';
+
+$route['admin/transaction-pay-save'] = 'admin/transactions/PayInvoiceSave';
+
+$route['admin/transactions-search-data/(:num)'] = 'admin/transactions/ajaxPaginationSearch/$1';
+
+$route['admin/view-invoice/(:any)'] = 'admin/transactions/viewInvoice/$1';
+
+$route['admin/transactions-pay'] = 'admin/transactions/PayInvoiceModal';
+
+
+
+$route['admin/reviews'] = 'admin/reviews';
+
+$route['admin/reviews-search-data'] = 'admin/reviews/ajaxPaginationSearch';
+
+$route['admin/reviews-search-data/(:num)'] = 'admin/reviews/ajaxPaginationSearch/$1';
+
+$route['admin/edit-reviews/(:num)'] = 'admin/reviews/manageReview/$1';
+
+$route['admin/reviews-save-data'] = 'admin/reviews/saveData';
+
+$route['admin/change-status-reviews'] = 'admin/reviews/statusChange';
+
+
+
+$route['admin/contacts'] = 'admin/contact';
+
+$route['admin/contact-search-data'] = 'admin/contact/ajaxPaginationSearch';
+
+$route['admin/contact-search-data/(:num)'] = 'admin/contact/ajaxPaginationSearch/$1';
+
+$route['admin/edit-review/(:num)'] = 'admin/reviews/manageReview/$1';
+
+
+
+$route['admin/add-page-to-menu'] = 'admin/menusettings/addData';
+
+
+
+$route['admin/categories'] = 'admin/categories';
+
+$route['admin/category-search-data'] = 'admin/categories/ajaxPaginationSearch';
+
+$route['admin/category-search-data/(:num)'] = 'admin/categories/ajaxPaginationSearch/$1';
+
+$route['admin/add-category'] = 'admin/categories/manageCategory';
+
+$route['admin/edit-category/(:any)'] = 'admin/categories/manageCategory/$1';
+
+$route['admin/category-save-data'] = 'admin/categories/saveData';
+
+$route['admin/change-status-category'] = 'admin/categories/statusChange';
+
+$route['admin/change-featured-category'] = 'admin/categories/changeFeaturedCategory';
+
+$route['admin/delete-category'] = 'admin/categories/deleteData';
+
+$route['admin/category-alias'] = 'admin/categories/AliasManage';
+
+$route['admin/save-category-ordering'] = 'admin/categories/saveOrdering';
+
+$route['admin/get-subcategory'] = 'admin/categories/getSub';
+
+
+
+$route['admin/subcategories'] = 'admin/subcategories';
+
+$route['admin/subcategory-search-data'] = 'admin/subcategories/ajaxPaginationSearch';
+
+$route['admin/subcategory-search-data/(:num)'] = 'admin/subcategories/ajaxPaginationSearch/$1';
+
+$route['admin/add-subcategory'] = 'admin/subcategories/manageCategory';
+
+$route['admin/edit-subcategory/(:any)'] = 'admin/subcategories/manageCategory/$1';
+
+$route['admin/subcategory-save-data'] = 'admin/subcategories/saveData';
+
+$route['admin/change-status-subcategory'] = 'admin/subcategories/statusChange';
+
+$route['admin/change-featured-subcategory'] = 'admin/subcategories/changeFeaturedCategory';
+
+$route['admin/delete-subcategory'] = 'admin/subcategories/deleteData';
+
+$route['admin/category-alias'] = 'admin/subcategories/AliasManage';
+
+$route['admin/save-subcategory-ordering'] = 'admin/subcategories/saveOrdering';
+
+
+$route['admin/coupons'] = 'admin/coupons';
+
+$route['admin/coupon-search-data'] = 'admin/coupons/ajaxPaginationSearch';
+
+$route['admin/coupon-search-data/(:num)'] = 'admin/coupons/ajaxPaginationSearch/$1';
+
+$route['admin/add-coupon'] = 'admin/coupons/manageCoupon';
+
+$route['admin/edit-coupon/(:any)'] = 'admin/coupons/manageCoupon/$1';
+
+$route['admin/coupon-save-data'] = 'admin/coupons/saveData';
+
+$route['admin/change-status-coupon'] = 'admin/coupons/statusChange';
+
+$route['admin/delete-coupon'] = 'admin/coupons/deleteData';
+
+
+
+$route['admin/products'] = 'admin/products';
+
+$route['admin/product-search-data'] = 'admin/products/ajaxPaginationSearch';
+
+$route['admin/product-search-data/(:num)'] = 'admin/products/ajaxPaginationSearch/$1';
+
+$route['admin/add-product'] = 'admin/products/manageProduct';
+
+$route['admin/edit-product/(:any)'] = 'admin/products/manageProduct/$1';
+
+$route['admin/product-save-data'] = 'admin/products/saveData';
+
+$route['admin/change-status-product'] = 'admin/products/statusChange';
+
+$route['admin/change-featured-product'] = 'admin/products/changeFeaturedProduct';
+
+$route['admin/delete-product'] = 'admin/products/deleteData';
+
+$route['admin/save-product-ordering'] = 'admin/products/saveOrdering';
+
+$route['admin/ajax-price-div-load'] = 'admin/products/ajaxLoadDiv';
+
+
+
+$route['admin/gallery/product/(:any)'] = 'admin/gallerys/manageGallery/$1';
+
+$route['admin/gallery-save-data'] = 'admin/gallerys/SaveData';
+
+$route['admin/gallery-get-data/(:any)/(:num)'] = 'admin/gallerys/GateData/$1';
+
+$route['admin/gallery-remove-data/(:any)'] = 'admin/gallerys/RemoveData';
+
+
+
+$route['admin/enquiries'] = 'admin/enquiries';
+
+$route['admin/enquiry-search-data'] = 'admin/enquiries/ajaxPaginationSearch';
+
+$route['admin/enquiry-search-data/(:num)'] = 'admin/enquiries/ajaxPaginationSearch/$1';
+
+$route['admin/delete-enquiry'] = 'admin/enquiries/deleteData';
+
+
+
+$route['admin/orders'] = 'admin/orders';
+
+$route['admin/order-search-data'] = 'admin/orders/ajaxPaginationSearch';
+
+$route['admin/order-search-data/(:num)'] = 'admin/orders/ajaxPaginationSearch/$1';
+
+$route['order/details'] = 'admin/orders/orderDetails';
+
+$route['order/manage'] = 'admin/orders/orderManage';
+
+$route['order/saveStatus'] = 'admin/orders/updateStatus';
+
+
+
+$route['admin/stores'] = 'admin/stores';
+
+$route['admin/store-search-data'] = 'admin/stores/ajaxPaginationSearch';
+
+$route['admin/store-search-data/(:num)'] = 'admin/stores/ajaxPaginationSearch/$1';
+
+$route['admin/add-store'] = 'admin/stores/manageStore';
+
+$route['admin/edit-store/(:any)'] = 'admin/stores/manageStore/$1';
+
+$route['admin/store-save-data'] = 'admin/stores/saveData';
+
+$route['admin/change-status-store'] = 'admin/stores/statusChange';
+
+$route['admin/delete-store'] = 'admin/stores/deleteData';
+
+
+
+$route['admin/testimonials'] = 'admin/testimonials';
+
+$route['admin/testimonial-search-data'] = 'admin/testimonials/ajaxPaginationSearch';
+
+$route['admin/testimonial-search-data/(:num)'] = 'admin/testimonials/ajaxPaginationSearch/$1';
+
+$route['admin/add-testimonial'] = 'admin/testimonials/manageTestimonial';
+
+$route['admin/edit-testimonial/(:any)'] = 'admin/testimonials/manageTestimonial/$1';
+
+$route['admin/testimonial-save-data'] = 'admin/testimonials/saveData';
+
+$route['admin/change-status-testimonial'] = 'admin/testimonials/statusChange';
+
+$route['admin/delete-testimonial'] = 'admin/testimonials/deleteData';
+
+
+
+
+
+$route['(:any)'] = 'home/getAny/$1';
+
+
+
+
+

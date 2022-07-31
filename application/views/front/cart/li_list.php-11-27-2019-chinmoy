@@ -1,0 +1,29 @@
+  <?php if($cartVal){?>
+  <?php if($type == 'appened'){?>
+    <li id="cart_li_<?php echo $cartVal->id; ?>">
+  <?php }?>
+  <div class="img-container">
+   <img src="<?php echo productFileExists('uploads/products/'.$cartVal->product_image,$cartVal->product_image);?>">
+  </div>
+  <div class="content">
+    <h5 class="title"> <?php echo ucwords($cartVal->product_name); ?></h5>
+    <p class="quantity">Product Price : ₹<?php echo number_format((float)$cartVal->product_price, 2, '.', ''); ?></p>
+    <p class="quantity">Tax : ₹<?php echo number_format((float)$cartVal->tax_price, 2, '.', ''); ?></p>
+    <div class="price">
+      <span class="amount">₹<?php echo number_format((float)$cartVal->total, 2, '.', ''); ?></span>
+      <div class="number-spinner" data-id="<?php echo $cartVal->id; ?>">
+        <button class="btn" data-dir="dwn" id="<?php echo $cartVal->id; ?>"><span class="fal fa-minus-circle"></span></button>
+        <input type="text" class="formcontrol" id="formcontrol_<?php echo $cartVal->id; ?>" value="<?php echo $cartVal->quantity; ?>" readonly="readonly">
+        <input type="hidden" name="pid" class="pid" id="pid_<?php echo $cartVal->id; ?>" value="<?php echo $cartVal->product_id; ?>">
+        <button class="btn" data-dir="up" id="<?php echo $cartVal->id; ?>"><span class="fal fa-plus-circle"></span></button>
+       </div>
+    </div>
+    <!-- <div class="pricing">
+      <span class="delivery"  style="font-size: 12px;">Delivery Charges: ₹10.25<br><span class="note">Free Delivery on Order of 50 Packages or more</span></span>
+    </div> -->
+  </div>
+  <a href="javascript:void(0);" class="remove" onclick="remove_cart(<?php echo $cartVal->id; ?>)" id="remove_<?php echo $cartVal->id; ?>"><i class="fal fa-times"></i></a>
+ <?php } ?>
+ <?php if($type == 'appened'){?>
+  </li>
+  <?php }?>

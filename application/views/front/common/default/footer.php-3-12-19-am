@@ -1,0 +1,79 @@
+<footer class="footer-area">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="footer-content">
+					<div class="brand">
+						<a href="#" class="logo">
+							<img src="https://singlasweet.mdemo.us/uploads/settings/logo/logo3.png" alt=""/>
+						</a>
+					</div>
+					<div class="contact-details">
+						<div class="item">
+							<div class="icon">
+								<i class="fa fa-phone fa-flip-horizontal"></i>
+							</div>
+							<div class="item-content">1800-000-0000</div>
+						</div>
+						<div class="item">
+							<div class="icon">
+								<i class="fa fa-envelope-open"></i>
+							</div>
+							<div class="item-content">info@singlasweets.com</div>
+						</div>
+					</div>
+					<div class="social-details">
+						<a href="#" class="item"><i class="fa fa-facebook-f"></i></a>
+						<a href="#" class="item"><i class="fab fa-twitter"></i></a>
+						<a href="#" class="item"><i class="fab fa-google-plus"></i></a>
+						<a href="#" class="item"><i class="fab fa-instagram"></i></a>
+						<a href="#" class="item"><i class="fab fa-youtube"></i></a>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="footer-content">
+					<h4 class="title"><span>Quick Links</span></h4>
+					<ul class="link-lists">
+						<li><a href="#">Home</a></li>
+						<li><a href="#">About</a></li>
+						<li><a href="#">Category</a></li>
+						<li><a href="#">Products</a></li>
+						<li><a href="#">Contact Us</a></li>
+						<li><a href="#">Terms of Service</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="footer-content">
+					<h4 class="title"><span>Top Categories</span></h4>
+					<ul class="shop-lists mb-4">
+						<li><a href="#">Bengali</a></li>
+						<li><a href="#">Kaju</a></li>
+						<li><a href="#">Petha</a></li>
+						<li><a href="#">Khoya</a></li>
+					</ul>
+					<h4 class="title"><span>Top Products</span></h4>
+					<ul class="shop-lists">
+						<li><a href="#">Almond Cookies</a></li>
+						<li><a href="#">Kaju Pista Cookies</a></li>
+						<li><a href="#">Aloo Laccha</a></li>
+						<li><a href="#">Besan Plain Laddu</a></li>
+						<li><a href="#">Angoori Petha</a></li>
+						<li><a href="#">Kaju Shankh</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="footer-bottom">
+		<div class="container">
+			<div class="copyright-sec">
+				<div class="copyright">
+					<?php echo getSiteSettings('copyright'); ?>
+				</div>
+				<div class="websiteby">Website by <a href="https://symlinktech.com" rel="nofollow" target="_blank">Symlink Technologies LLP</a></div>
+			</div>
+		</div>
+	</div>
+</footer>

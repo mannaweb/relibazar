@@ -1,0 +1,157 @@
+<header class="header-area">
+<!-- Navbar Area -->
+<div class="delicious-main-menu">
+    <div class="classy-nav-container breakpoint-off">
+        <div class="container">
+            <!-- Menu -->
+            <nav class="classy-navbar justify-content-between" id="deliciousNav">
+                <!-- Logo -->
+                <a class="nav-brand" href="<?php echo base_url();?>"><img src="<?php echo getSiteSettings('logo')?>" alt="<?php echo getSiteSettings('title')?>" width="210px;"></a>
+                <!-- Navbar Toggler -->
+                <div class="classy-navbar-toggler">
+                    <span class="navbarToggler"><span></span><span></span><span></span></span>
+                </div>
+                <!-- Menu -->
+                <div class="classy-menu">
+                    <!-- close btn -->
+                    <div class="classycloseIcon">
+                        <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
+                    </div>
+                    <!-- Nav Start -->
+                    <div class="classynav">
+                        <?php 
+                        $getmenu = $this->db->get_where('menu_settings',array('setting_key'=>'menu','menu_location'=>'header'))->row();
+                        if($getmenu && $getmenu->setting_value){
+                        $menus = unserialize($getmenu->setting_value);     
+                        //echo '<pre>';print_r($menus);die();             
+                        ?>
+                        <ul>
+                            <?php foreach ($menus as $key => $value){
+                            if($value['type'] == 'custom'){
+                                $Mainurl = ($value['href'])?$value['href']:'javascript:void(0)';
+                            }else if($value['type'] == 'page'){
+                                if(getPageDetails($value['id'],'slug') && getPageDetails($value['id'],'slug') == 'home'){
+                                    $Mainurl = base_url();
+                                } else if(getPageDetails($value['id'],'slug') && getPageDetails($value['id'],'slug') != 'home'){
+                                    $Mainurl = base_url().getPageDetails($value['id'],'slug');
+                                } else {
+                                    $Mainurl = 'javascript:void(0)';
+                                }
+                            }
+                            if(isset($value['children'])){ 
+                        ?>
+                        <?php if($value){?>
+                        <li class="<?php echo (current_url() == $Mainurl)?'active':''?>"><a href="<?php echo $Mainurl;?>"><?php echo $value['title'];?></a>
+                                <ul class="dropdown">
+                                    <?php foreach ($value['children'] as $key1 => $value1) {           
+                                        if($value1['type'] == 'custom'){
+                                            $Suburl = ($value1['href'])?$value1['href']:'javascript:void(0)';
+                                        }else if($value1['type'] == 'page'){
+                                            if(getPageDetails($value1['id'],'slug') && getPageDetails($value1['id'],'slug') == '/'){
+                                                $Suburl = base_url();
+                                            } else if(getPageDetails($value1['id'],'slug') && getPageDetails($value1['id'],'slug') != '/'){
+                                                $Suburl = base_url().getPageDetails($value1['id'],'slug');
+                                            } else {
+                                                $Suburl = 'javascript:void(0)';
+                                            }
+                                        }else if($value1['type'] == 'post'){
+                                            $Suburl = (getPostDetails($value1['id'],'alias'))?base_url().getPostDetails($value1['id'],'alias'):'javascript:void(0)';
+                                        }
+                                    
+                                    ?>
+                                    <?php if($value1){?>
+                                    <li><a href="<?php echo $Suburl;?>"><?php echo $value1['title'];?></a></li>
+                                    <?php } ?>
+                                    <?php } ?>                                    
+                                </ul>
+                            </li>
+                        <?php } ?>    
+                        <?php } else { ?>
+                        <?php if($value){?>
+                         <li class="<?php echo (current_url() == $Mainurl)?'active':''?>"><a href="<?php echo $Mainurl;?>"><?php echo $value['title'];?></a></li>   
+                        <?php } ?>
+                        <?php } } ?>
+
+                          <?php if($this->session->userdata('id')){?>
+                                  <li><a href="#">My Account</a>
+                                        <ul class="dropdown">
+                                            <li><a href="#">Dashboard</a></li>
+                                              <li><a href="<?php echo base_url();?>user/profile">Profile</a></li>
+                                            <li><a href="#">Orders</a></li>
+                                            <li><a href="<?php echo base_url();?>user/change-password">Change Password</a></li>
+                                            <li><a href="<?php echo base_url();?>logout">Logout</a></li>
+                                         </ul>
+                                    </li>
+                            <?php } else{ ?>
+                             <li class=""><a href="<?php echo base_url(); ?>signup">Sign Up</a></li>
+                             <li class=""><a href="<?php echo base_url(); ?>signin">Sign In</a></li>
+                            <?php } ?>
+
+
+                        </ul>
+                        <?php } ?>                        
+                    </div>
+                    <!-- Nav End -->
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+<?php $getAllCartData = getAllCartData(get_cookie('session_id'));  ?>
+<div class="cart-icon">
+    <i class="fas fa-fw fa-shopping-cart"></i>
+    <span class="badge" id="cartcount"><?php echo count($getAllCartData);?></span>
+</div>
+<div class="cart-container">
+    <div id="loader" style="display: none;">
+      <div class="loader">  
+         <div class="center">
+           <img alt="" src="<?php echo base_url();?>assets/front/img/loder.gif">
+            <p class="text">Loading</p>
+         </div>
+       </div>
+     </div>
+    <a href="javascript:void(0);" class="cart-close"><i class="fal fa-times"></i></a>
+    <ul class="cart-list" id="cart_appened_div">   
+     <?php 
+     if(count($getAllCartData)>0){
+        foreach ($getAllCartData as $cartKey => $cartVal) {
+     ?>     
+      <li id="cart_li_<?php echo $cartVal->id; ?>">
+        <div class="img-container">
+         <img src="<?php echo productFileExists('uploads/products/'.$cartVal->product_image,$cartVal->product_image);?>">
+        </div>
+        <div class="content">
+          <h5 class="title"> <?php echo ucwords($cartVal->product_name); ?></h5>
+          <p class="quantity">Product Price : ₹<?php echo number_format((float)$cartVal->product_price, 2, '.', ''); ?></p>
+          <p class="quantity">Tax : ₹<?php echo number_format((float)$cartVal->tax_price, 2, '.', ''); ?></p>
+          <div class="price">
+            <span class="amount">₹<?php echo number_format((float)$cartVal->total, 2, '.', ''); ?></span>
+            <div class="number-spinner" data-id="<?php echo $cartVal->id; ?>">
+              <button class="btn" data-dir="dwn" id="<?php echo $cartVal->id; ?>"><span class="fal fa-minus-circle"></span></button>
+              <input type="text" class="formcontrol" id="formcontrol_<?php echo $cartVal->id; ?>" value="<?php echo $cartVal->quantity; ?>" readonly>
+              <input type="hidden" name="pid" class="pid" id="pid_<?php echo $cartVal->id; ?>" value="<?php echo $cartVal->product_id; ?>">
+              <button class="btn" data-dir="up" id="<?php echo $cartVal->id; ?>"><span class="fal fa-plus-circle"></span></button>
+             </div>
+          </div>
+          <!-- <div class="pricing">            
+            <span class="delivery" style="font-size: 12px;">Product Price: ₹<?php echo number_format((float)$cartVal->product_price, 2, '.', ''); ?><br><span class="note">Free Delivery on Order of 50 Packages or more</span></span>
+          </div> -->
+        </div>
+        <a href="javascript:void(0);" class="remove" onclick="remove_cart(<?php echo $cartVal->id; ?>)" id="remove_<?php echo $cartVal->id; ?>"><i class="fal fa-times"></i></a>
+      </li>
+     <?php } }else{?>
+      <li class="empty">
+        <img src="<?php echo base_url(); ?>assets/front/img/empty-cart.png" alt=""/>
+        <h5 class="title">Your Cart is Empty</h5>
+        <p class="text">Please add products to cart</p>
+      </li>
+     <?php }?>
+    </ul>
+    <div id="checkout_div" <?php if(count($getAllCartData)>0){?> style="display: block;" <?php }else{?> style="display: none;" <?php }?>>
+    <div class="checkout text-center">
+      <a href="#" class="btn btn-block btn-checkout"><i class="fal fa-fw fa-box-check"></i> Checkout</a>
+    </div>
+    </div>
+  </div>
+</header>

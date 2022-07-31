@@ -1,0 +1,28 @@
+ <?php $this->load->view('front/common/default/page_banner'); ?>
+
+    <!-- ##### Best Receipe Area Start ##### -->
+    <section class="best-receipe-area">
+        <!-- Receipe Post Search -->
+        <div class="receipe-post-search mb-80">
+            <div class="container">
+                <form action="#" method="post">
+                    <div class="row">                        
+                        <div class="col-12 col-lg-8">
+                            <input type="search" id="keyword" name="keyword" placeholder="Search categories...." onkeyup="searchFilter();">
+                        </div>
+                        <div class="col-12 col-lg-3 text-right">
+                            <button type="button" class="btn delicious-btn" onclick="resetFilter();">Reset</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row" id="catList">
+                
+            </div>
+            <div class="row form-row" id="pagination"></div>
+        </div>
+    </section>
+    <!-- ##### Best Receipe Area End ##### -->

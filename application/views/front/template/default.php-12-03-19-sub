@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <?php
+      $GetSeo = array();
+      if($this->uri->segment(1) == ''){
+         $GetSeo = getSeo(array('type'=>'pages','type_id'=>getPageDetailsByAlias('/','id')));
+      } else if($this->uri->segment(1) == 'post'){
+         $GetSeo = getSeo(array('type'=>'posts','type_id'=>getPostDetailsByAlias($this->uri->segment(2),'id')));
+      } else if($this->uri->segment(1) == 'posts'){
+         $GetSeo = getSeo(array('type'=>'categories','type_id'=>getCatDetailsByAlias($this->uri->segment(2),'id')));
+         if(!$GetSeo){
+            $GetSeo = getSeo(array('type'=>'pages','type_id'=>getPageDetailsByAlias($this->uri->segment(1),'id')));
+         }
+      }else{
+         $GetSeo = getSeo(array('type'=>'pages','type_id'=>getPageDetailsByAlias($this->uri->segment(1),'id')));
+      }
+      ?>
+    <meta name="description" content="<?php echo isset($GetSeo->description)?$GetSeo->description:'';?>">
+    <meta name="keywords" content="<?php echo isset($GetSeo->tags)?$GetSeo->tags:'';?>">
+    <meta name="author" content="<?php echo isset($GetSeo->author)?$GetSeo->author:'';?>">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title -->
+    <title><?php echo isset($GetSeo->seo_title)?$GetSeo->seo_title:'Singla Sweets | Home';?></title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="img/core-img/favicon.ico">
+
+      <?php if(isset($cssFiles)){ foreach ($cssFiles as $cssKey => $cssValue) { ?>
+         <link rel="stylesheet" href="<?php echo base_url();?>assets/front/<?php echo $cssValue;?>.css">
+      <?php } } ?>
+    <!-- Core Stylesheet -->
+    <link href="<?php echo base_url();?>assets/admin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="<?php echo base_url();?>assets/front/css/toastr.min.css">
+    <link rel="stylesheet" href="<?php echo base_url();?>assets/front/css/owl.carousel.min2.css">
+    <link rel="stylesheet" href="<?php echo base_url();?>assets/front/css/owl.theme.min.css">
+    <link rel="stylesheet" href="<?php echo base_url();?>assets/front/style.css">
+
+</head>
+ 
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <i class="circle-preloader"></i>
+        <!--<img src="<?php echo base_url();?>assets/front/img/core-img/salad.png" alt="">-->
+    </div>
+
+    
+
+    <!-- ##### Header Area Start ##### -->
+    <?php $this->load->view('front/common/default/header'); ?>
+    <!-- ##### Header Area End ##### -->    
+
+    <?php 
+    $this->load->view((isset($viewPage)?'front/'.$viewPage:''));?>
+    
+
+    <div class="modal product-details" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true"></div>
+
+    <!-- ##### Footer Area Start ##### -->
+    <?php $this->load->view('front/common/default/footer'); ?>
+    <!-- ##### Footer Area Start ##### -->
+
+    <!-- ##### All Javascript Files ##### -->
+    <!-- jQuery-2.2.4 js -->
+    <script src="<?php echo base_url();?>assets/front/js/jquery/jquery-2.2.4.min.js"></script>
+    <!-- Popper js -->
+    <script src="<?php echo base_url();?>assets/front/js/bootstrap/popper.min.js"></script>
+    <!-- Bootstrap js -->
+    <script src="<?php echo base_url();?>assets/front/js/bootstrap/bootstrap.min.js"></script>
+    <!-- All Plugins js -->
+    <script src="<?php echo base_url();?>assets/front/js/plugins/plugins.js"></script>
+    <!-- Active js -->
+    <script src="<?php echo base_url();?>assets/front/js/active.js"></script>
+    <script src="<?php echo base_url();?>assets/front/js/toastr.min.js"></script>
+    <script src="<?php echo base_url();?>assets/front/js/owl.carousel.min.js"></script>
+    <script src="<?php echo base_url();?>assets/front/js/common.js"></script>
+    <script type="text/javascript">
+      var BASE_URL = '<?php echo base_url();?>';
+    </script>
+    <?php if(isset($jsFiles)){ foreach ($jsFiles as $jsKey => $jsValue) { ?>
+      <script src="<?php echo base_url();?>assets/front/js/<?php echo $jsValue;?>.js"></script>
+    <?php } } ?>
+</body>
+
+</html>
